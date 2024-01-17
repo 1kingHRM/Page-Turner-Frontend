@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdAutoStories, MdEdit, MdDelete } from "react-icons/md";
 import { motion } from "framer-motion";
-
+import { Loader, Modal } from "@mantine/core";
 import Image from "next/image";
 import Arts from "@/public/Arts.png";
 
 const Books = () => {
+  const [opened, setOpened] = useState(false);
+
   const books = [
     {
       id: 1,
@@ -110,6 +112,7 @@ const Books = () => {
           </button>
         </div>
       </div>
+      <Loader color="brown.1" />
       <div className="my-20 flex flex-wrap gap-10">
         {books.map((book, i) => {
           return (
@@ -128,7 +131,10 @@ const Books = () => {
                 </p>
                 <p className="text-md text-slate-950">By: {book.author}</p>
                 <div className="flex justify-around items-center text-tertiary my-5">
-                  <div className="p-2 rounded-lg bg-primary cursor-pointer">
+                  <div
+                    className="p-2 rounded-lg bg-primary cursor-pointer"
+                    onClick={() => setOpened(true)}
+                  >
                     <MdEdit size={20} />
                   </div>
                   <div className="p-2 rounded-lg bg-primary cursor-pointer">
@@ -140,6 +146,9 @@ const Books = () => {
           );
         })}
       </div>
+      <Modal opened={opened} onClose={() => setOpened(false)}>
+        <div className="h-20 w-20"></div>
+      </Modal>
     </div>
   );
 };
