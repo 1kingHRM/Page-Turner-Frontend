@@ -7,20 +7,14 @@ import Hero from "@/public/Hero.png";
 import Logo from "@/public/Logo.png";
 
 import { motion } from "framer-motion";
+import NavBar from "../reusable/NavBar";
 
 const Banner = () => {
   return (
     <div className="bg-pale lg:h-[90vh] h-auto flex flex-col lg:px-[10%] px-[5%] pt-5 pb-10 justify-between">
-      <div className="h-[10vh] flex bg-pale items-center justify-between">
-        <Link
-          href={"/"}
-          className="w-[20vw] text-2xl text-tertiary flex items-center gap-2"
-        >
-          <Image src={Logo} alt="logo" className="w-[8vh] h-[5vh] " />
-        </Link>
-      </div>
-      <div className="flex lg:flex-row flex-col mt-16 w-full justify-between">
-        <div className="flex flex-col lg:w-[40%] w-full justify-start">
+      <NavBar />
+      <div className="flex lg:flex-row flex-col mt-10 w-full justify-between">
+        <div className="flex flex-col lg:w-[40%] w-full justify-center">
           <p className="text-primary lg:text-4xl text-2xl leading-10 font-medium lg:text-start text-center">
             Discover the joy of reading with{" "}
             <span className="text-tertiary text-3xl lg:text-6xl font-[700]">

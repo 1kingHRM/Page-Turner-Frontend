@@ -18,7 +18,7 @@ const Benefits = () => {
     },
   ];
   return (
-    <div className="flex flex-col bg-white lg:h-[70vh] h-auto items-center">
+    <div className="flex flex-col bg-gradient-to-b from-pale to-white lg:h-[70vh] h-auto items-center">
       <p className="py-20 text-tertiary font-[600] text-4xl underline">
         Features
       </p>

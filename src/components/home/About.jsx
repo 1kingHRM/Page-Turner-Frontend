@@ -11,7 +11,7 @@ const About = () => {
         alt="Author"
         className="lg:w-[50%] w-full h-auto lg:h-[80vh] object-cover rounded-xl shadow-xl lg:mt-0 mt-10"
       />
-      <div className="lg:w-[40%] w-full lg:mt-0 mt-20  flex flex-col lg:text-xl text-lg ">
+      <div className="lg:w-[40%] w-full lg:mt-0 mt-20 flex flex-col lg:text-xl text-lg justify-center items-center">
         <p className="lg:text-2xl text-xl underline text-tertiary mb-10 text-center font-[600]">
           About
         </p>

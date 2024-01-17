@@ -112,7 +112,7 @@ const Books = () => {
           </button>
         </div>
       </div>
-      <Loader color="brown.1" />
+      <Loader color="brown.6" />
       <div className="my-20 flex flex-wrap gap-10">
         {books.map((book, i) => {
           return (

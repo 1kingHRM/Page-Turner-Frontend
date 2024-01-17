@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Work+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,7 +25,6 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-  font-family: "Work_Sans";
   overflow-x: hidden;
 }
 
@@ -44,4 +43,10 @@ body {
 
 .scrollbar-custom::-webkit-scrollbar-track {
   background-color: transparent;
+}
+
+.goudy-bookletter-1911-regular {
+  font-family: "Goudy Bookletter 1911", serif;
+  font-weight: 400;
+  font-style: normal;
 }
