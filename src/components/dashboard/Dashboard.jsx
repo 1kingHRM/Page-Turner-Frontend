@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import Books from "./Books";
+
 
 import Link from "next/link";
 
@@ -11,8 +11,11 @@ import { CiLogout } from "react-icons/ci";
 import Image from "next/image";
 import Logo from "@/public/Logo.png";
 
-import { MdDashboard, MdSettings, MdAutoStories } from "react-icons/md";
+import { MdDashboard, MdAutoStories, MdAir } from "react-icons/md";
 
+import Overview from "./Overview";
+import Genres from "./Genres";
+import Books from "./Books";
 
 const Dashboard = () => {
 
@@ -20,18 +23,21 @@ const Dashboard = () => {
     {
       name: "Overview",
       icon: <MdDashboard size={26} />,
+      component: <Overview />
     },
     {
       name: "Books",
       icon: <MdAutoStories size={26} />,
+      component: <Books/>
     },
     {
       name: "Genres",
-      icon: <MdSettings size={26} />,
+      icon: <MdAir size={26} />,
+      component: <Genres/>
     },
   ];
 
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(0);
 
   const logout = () => {
     window.localStorage.setItem("page-turner", "");
@@ -55,7 +61,7 @@ const Dashboard = () => {
             navs.map((nav, i) => {
               return <p key={i} onClick={() => {
                 setActive(i)
-              }} className={`text-2xl flex gap-2 items-center text-tertiary ${active === i && "font-[600] underline"}`} >
+              }} className={`text-2xl cursor-pointer flex gap-2 items-center text-tertiary ${active === i && "font-[600] underline"}`} >
 
                 {nav.icon}
                 {nav.name}
@@ -70,7 +76,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="overflow-y-scroll h-[90vh] scrollbar-custom bg-secondary">
-        <Books />
+        {navs[active].component}
       </div>
     </div>
   );
