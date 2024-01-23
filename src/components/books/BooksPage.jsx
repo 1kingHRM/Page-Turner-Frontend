@@ -6,6 +6,8 @@ import Image from "next/image";
 import Banner from "@/public/Books.png";
 import Logo from "@/public/Logo.png";
 
+import Three from "@/public/Three.png";
+
 import { motion } from "framer-motion";
 
 import Arts from "@/public/Arts.png";
@@ -65,8 +67,24 @@ const BooksPage = () => {
   ];
 
   return (
-    <div className="w-[100vw]">
-      <div className="w-full h-[60vh] bg-primary"></div>
+    <div className="w-[100vw] h-auto">
+      <div className="w-full h-[100vh] relative">
+        <Image src={Three} alt="" className="object-cover w-full h-full absolute top-0 left-0 -z-10"/>
+        <div className="bg-[#000000CC] flex flex-col items-center justify-center w-full h-full z-5">
+        <p className="text-2xl lg:text-6xl text-white font-medium">
+          Page Turner
+        </p>
+        <input
+                type="search"
+                placeholder="Search Book Title or Book Author"
+                // value={searchText}
+                // onKeyDown={handleKeyDown}
+                // onChange={onTextChange}
+                className="focus:outline-none mt-5 py-2 px-3 border border-tertiary1 rounded-lg lg:w-[400px] text-tertiary bg-offWhite"
+              />
+        <p className="mt-5 text-white lg:text-2xl text-lg">Or browse through our <span className="font-[600] underline">genres</span></p>
+        </div>
+      </div>
       <div className="w-full h-auto bg-pale py-20 flex flex-col">
         <p className="text-4xl text-center text-tertiary">Categories</p>
         <div className="flex lg:flex-col flex-row gap-0 lg:gap-20 mt-20">
