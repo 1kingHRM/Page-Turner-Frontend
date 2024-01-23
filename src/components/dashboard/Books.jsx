@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdAutoStories, MdEdit, MdDelete } from "react-icons/md";
 import { motion } from "framer-motion";
 import { Loader, Modal, TextInput, Select, Textarea } from "@mantine/core";
 import Image from "next/image";
 import Arts from "@/public/Arts.png";
 
+import axios from "axios";
+import baseUrl from "@/src/constants/api";
+
 const Books = () => {
   const [opened, setOpened] = useState(false);
   const [flag, setFlag] = useState(-1);
   const [selectedBook, setSelectedBook] = useState({});
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   const close = () => {
     setOpened(false);
@@ -34,104 +40,137 @@ const Books = () => {
     setSelectedBook(book);
   };
 
-  const books = [
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-    {
-      id: 1,
-      name: "The Lost Book",
-      author: "James Cameron",
-      image: Arts,
-      genre: "Arts",
-      description: "This is a description",
-    },
-  ];
+  //  const books = [
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  // {
+  //   id: 1,
+  //   name: "The Lost Book",
+  //   author: "James Cameron",
+  //   image: Arts,
+  //   genre: "Arts",
+  //   description: "This is a description",
+  // },
+  //];
+
+  useEffect(() => {
+    if (books.length === 0) {
+      setLoading(true);
+      let userData = window.localStorage.getItem("page-turner");
+      userData = JSON.parse(userData);
+
+      axios({
+        method: "GET",
+        url: `${baseUrl}/books`,
+      }).then((res) => { 
+        setBooks(res.data.payload)
+        setLoading(false);
+       }).catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+    }
+  }, [books])
+
+  function onSearch() {
+    
+  }
+
+  const handleKeyDown = (event) => {
+    if(event.key === "Enter") {
+      onSearch();
+    }
+  }
+
+  const onTextChange = (event) => {
+    setSearchText(event.target.value);
+  } 
 
   return (
     <div className="w-full flex flex-col h-auto px-10 bg-secondary">
@@ -145,8 +184,11 @@ const Books = () => {
 
         <div className="flex items-center gap-10">
           <input
-            type="text"
+            type="search"
             placeholder="Search Book"
+            value={searchText}
+            onKeyDown={handleKeyDown}
+            onChange={onTextChange}
             className="focus:outline-none py-2 px-3 border border-tertiary1 rounded-lg w-[300px] text-tertiary bg-offWhite"
           />
           <button
@@ -165,14 +207,16 @@ const Books = () => {
               key={i}
               className="bg-white flex flex-col shadow-lg rounded-lg w-[250px] h-[250px]"
             >
-              <Image
+              {/* <Image
                 src={book.image}
                 alt=""
                 className="w-full h-[120px] object-contain pt-5"
-              />
+              /> */}
+
+              <div className="w-full h-[120px] pt-5" />
               <div className="px-2 flex flex-col">
                 <p className="font-medium text-xl text-center text-slate-950">
-                  {book.name}
+                  {book.title}
                 </p>
                 <p className="text-md text-center text-slate-950">
                   By: {book.author}
@@ -234,12 +278,12 @@ const AddModal = ({ onUpload }) => {
           "Cosmetics",
           "Toys",
         ]}
-        // value={credentials.category}
-        // onChange={(e) => {
-        //   if (e !== null) {
-        //     setCredentials({ ...credentials, category: e });
-        //   }
-        // }}
+      // value={credentials.category}
+      // onChange={(e) => {
+      //   if (e !== null) {
+      //     setCredentials({ ...credentials, category: e });
+      //   }
+      // }}
       />
       <div className="h-5" />
       <TextInput
@@ -322,12 +366,12 @@ const EditModal = ({ book, onEdit }) => {
           "Toys",
         ]}
         value={book.genre}
-        // value={credentials.category}
-        // onChange={(e) => {
-        //   if (e !== null) {
-        //     setCredentials({ ...credentials, category: e });
-        //   }
-        // }}
+      // value={credentials.category}
+      // onChange={(e) => {
+      //   if (e !== null) {
+      //     setCredentials({ ...credentials, category: e });
+      //   }
+      // }}
       />
       <div className="h-5" />
       <TextInput

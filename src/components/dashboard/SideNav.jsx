@@ -22,6 +22,11 @@ const SideNav = ({ active, setIndex }) => {
     },
   ];
 
+  const logout = () => {
+    window.localStorage.setItem("page-turner", "");
+    window.location.replace("/");
+  }
+
   return (
     <div className="w-full h-full flex flex-col border-[1.5px] border-r-faintBlack border-y-0 border-l-0">
       <Link href={"/"} className="flex items-center px-5 h-[10vh] ">
@@ -38,9 +43,8 @@ const SideNav = ({ active, setIndex }) => {
                   scale: 1.02,
                 }}
                 key={i}
-                className={`flex items-center  ${
-                  i === active && "bg-primary text-white hover:bg-primary"
-                } hover:bg-secondary hover:text-black text-tertiary font-normal rounded-lg text-md w-full py-2 gap-3 pl-5 cursor-pointer`}
+                className={`flex items-center  ${i === active && "bg-primary text-white hover:bg-primary"
+                  } hover:bg-secondary hover:text-black text-tertiary font-normal rounded-lg text-md w-full py-2 gap-3 pl-5 cursor-pointer`}
               >
                 {nav.icon}
                 {nav.name}
@@ -49,7 +53,7 @@ const SideNav = ({ active, setIndex }) => {
           })}
         </div>
 
-        <div className="mt-10 flex gap-2 items-center justify-center hover:underline cursor-pointer text-tertiary hover:font-medium">
+        <div onClick={logout} className="mt-10 flex gap-2 items-center justify-center hover:underline cursor-pointer text-tertiary hover:font-medium">
           Logout
           <CiLogout size={22} />
         </div>
