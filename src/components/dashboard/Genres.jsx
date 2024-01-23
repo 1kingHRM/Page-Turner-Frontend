@@ -12,7 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-const Books = () => {
+const Genres = () => {
   const [opened, setOpened] = useState(false);
   const [flag, setFlag] = useState(-1);
   const [selectedBook, setSelectedBook] = useState({});
@@ -359,12 +359,5 @@ const EditModal = ({ book, onEdit }) => {
   );
 };
 
-export default Books;
+export default Genres;
 
-const model = {
-  name: "Name",
-  image: "Image",
-  author: "Author",
-  description: "Description",
-  genre: "Genre",
-};

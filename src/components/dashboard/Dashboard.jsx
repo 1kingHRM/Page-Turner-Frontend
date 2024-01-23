@@ -11,7 +11,27 @@ import { CiLogout } from "react-icons/ci";
 import Image from "next/image";
 import Logo from "@/public/Logo.png";
 
+import { MdDashboard, MdSettings, MdAutoStories } from "react-icons/md";
+
+
 const Dashboard = () => {
+
+  const navs = [
+    {
+      name: "Overview",
+      icon: <MdDashboard size={26} />,
+    },
+    {
+      name: "Books",
+      icon: <MdAutoStories size={26} />,
+    },
+    {
+      name: "Genres",
+      icon: <MdSettings size={26} />,
+    },
+  ];
+
+  const [active, setActive] = useState(1);
 
   const logout = () => {
     window.localStorage.setItem("page-turner", "");
@@ -30,10 +50,24 @@ const Dashboard = () => {
             Page Turner
           </p>
         </Link>
-        <div onClick={logout} className="flex gap-2 items-center justify-center hover:underline cursor-pointer text-tertiary hover:font-medium">
+        <div className="w-1/3 flex  h-10 items-center justify-around">
+          {
+            navs.map((nav, i) => {
+              return <p key={i} onClick={() => {
+                setActive(i)
+              }} className={`text-2xl flex gap-2 items-center text-tertiary ${active === i && "font-[600] underline"}`} >
+
+                {nav.icon}
+                {nav.name}
+              </p>
+            })
+          }
+
+        </div>
+        <div onClick={logout} className="flex gap-2 items-center justify-center hover:underline cursor-pointer text-tertiary hover:font-medium text-2xl">
           Logout
           <CiLogout size={22} />
-        </div>    
+        </div>
       </div>
       <div className="overflow-y-scroll h-[90vh] scrollbar-custom bg-secondary">
         <Books />

@@ -29,9 +29,17 @@ const Login = () => {
     let password = document.getElementById("passwordID").value;
 
 
+    if(email.length === 0) {
+      toast.error("Please enter your email");
+      return;
+    }
+
+    if(password.length === 0) {
+      toast.error("Please enter your password");
+      return;
+    }
+
     setLoading(true);
-
-
     axios({
       method: "POST",
       url: `${baseUrl}/user/login`,
