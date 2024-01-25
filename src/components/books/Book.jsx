@@ -11,6 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { Loader } from '@mantine/core';
 import NavBar from '../reusable/NavBar';
 
+import Image from "next/image"
+import Footer from '../reusable/Footer';
+
 const Book = ({ id }) => {
     const [loading, setLoading] = useState(true);
     const [book, setBook] = useState({});
@@ -45,9 +48,20 @@ const Book = ({ id }) => {
             />
             <div className='bg-pale w-[100vw] h-auto flex flex-col lg:px-[10%] px-[5%] pt-5 pb-10'>
                 <NavBar hideLogin={true} />
-                <div className='flex flex-col'>
+                {
+                    !loading && book.title !== undefined && book.title !== null && <div className='flex flex-col mt-20'>
+                        <h1 className='lg:text-4xl text-2xl text-tertiary text-center underline'>{book.title}</h1>
+                        <h2 className='lg:text-2xl text-xl text-tertiary text-center'>Written by {book.author}</h2>
+                        <div className='bg-primary h-[60vh] w-[100%] my-5'></div>
+                        <p className='text-xl lg:text-2xl text-tertiary font-normal text-start'>{book.description}</p>
 
-                </div>
+                        <div className='flex w-full items-center justify-center mt-10 mb-20'>
+                        <button className='bg-primary rounded-lg px-4 py-3 lg:w-[300px]'>Download</button>
+                        </div>
+                    </div>
+                }
+
+                <Footer />
             </div>
 
         </>

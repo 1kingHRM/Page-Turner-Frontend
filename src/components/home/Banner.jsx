@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Hero from "@/public/Hero.png";
@@ -10,9 +10,20 @@ import { motion } from "framer-motion";
 import NavBar from "../reusable/NavBar";
 
 const Banner = () => {
+  const [hide, setHide] = useState(false);
+
+
+  useEffect(() => {
+    let userData = window.localStorage.getItem("page-turner");
+    if (userData !== undefined && userData !== null && userData.length > 0) {
+      setHide(true);
+    }
+  }, [])
+
+
   return (
     <div className="bg-pale lg:h-[90vh] h-auto flex flex-col lg:px-[10%] px-[5%] pt-5 pb-10 justify-between">
-      <NavBar />
+      <NavBar hideLogin={hide} />
       <div className="flex lg:flex-row flex-col mt-10 w-full justify-between">
         <div className="flex flex-col lg:w-[40%] w-full justify-center">
           <p className="text-primary lg:text-4xl text-2xl leading-10 font-medium lg:text-start text-center">

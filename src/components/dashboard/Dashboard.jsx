@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 
 
@@ -28,12 +28,12 @@ const Dashboard = () => {
     {
       name: "Books",
       icon: <MdAutoStories size={26} />,
-      component: <Books/>
+      component: <Books />
     },
     {
       name: "Genres",
       icon: <MdAir size={26} />,
-      component: <Genres/>
+      component: <Genres />
     },
   ];
 
@@ -43,6 +43,14 @@ const Dashboard = () => {
     window.localStorage.setItem("page-turner", "");
     window.location.replace("/");
   }
+
+  useEffect(() => {
+    let userData = window.localStorage.getItem("page-turner");
+    if (userData === undefined || userData === null || userData.length === 0) {
+      window.location.replace("/");
+      return <></>
+    }
+  }, [])
 
   return (
     <div className="w-[100vw] h-[100vh] bg-pale flex flex-col">
