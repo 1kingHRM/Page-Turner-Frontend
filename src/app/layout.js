@@ -11,8 +11,11 @@ const goudy = Goudy_Bookletter_1911({
 });
 
 export const metadata = {
-  title: "Page Turner",
-  description: "Manage your library from anywhere",
+  title: {
+    template: "%s | Page Turner",
+    default: "Page Turner"
+  },
+  description: "Download any book, anywhere, anytime.",
 };
 
 const mantineColors = [

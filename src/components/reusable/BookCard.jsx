@@ -10,7 +10,7 @@ function randomStart() {
   return [0, x, -x, 0];
 }
 
-const OfferCard = ({ image, name, key }) => {
+const BookCard = ({ image, name, key }) => {
   const [range, setRange] = useState([0, 0, 0, 0]);
 
   useEffect(() => {
@@ -41,4 +41,4 @@ const OfferCard = ({ image, name, key }) => {
   );
 };
 
-export default OfferCard;
+export default BookCard;
