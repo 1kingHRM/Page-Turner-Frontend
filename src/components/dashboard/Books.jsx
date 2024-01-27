@@ -128,6 +128,145 @@ const Books = () => {
     setSearchText(event.target.value);
   };
 
+  function uploadBook() {}
+
+  const AddModal = () => {
+    return (
+      <div className="flex flex-col">
+        <p className="text-2xl text-tertiary text-center pb-5">Add New Book?</p>
+        <TextInput
+          title="Book Title"
+          placeholder="Enter Book Title"
+          color="brown.6"
+        />
+        <div className="h-5" />
+        <Select
+          placeholder="Select Genre"
+          data={genres.map((genre, i) => {
+            return genre.name;
+          })}
+          // value={credentials.category}
+          // onChange={(e) => {
+          //   if (e !== null) {
+          //     setCredentials({ ...credentials, category: e });
+          //   }
+          // }}
+        />
+        <div className="h-5" />
+        <TextInput
+          title="Book Author"
+          placeholder="Enter Book Author"
+          color="brown.6"
+        />
+        <div className="h-5" />
+
+        <Textarea
+          title="Book Decription"
+          placeholder="Enter Book Description"
+          color="brown.6"
+        />
+        <div className="h-10" />
+
+        <button
+          onClick={uploadBook}
+          className="w-full rounded-lg bg-primary text-white font-medium py-2"
+        >
+          Upload
+        </button>
+      </div>
+    );
+  };
+
+  const DeleteModal = ({ book, onCancel }) => {
+    return (
+      <div className="flex flex-col">
+        <p className="text-2xl text-tertiary text-center mt-5">
+          Are you sure you want to delete this book?
+        </p>
+        <div className="flex items-center justify-around w-full mt-5">
+          <Image src={book.image} alt="" className="" />
+          <div className="flex flex-col w-[50%]">
+            <p>{book.name}</p>
+            <p>By {book.author}</p>
+          </div>
+        </div>
+        <div className="flex justify-around py-5">
+          <button
+            className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+          <button
+            className="w-[40%] bg-red-700 py-2 rounded-lg text-white font-medium"
+            onClick={onCancel}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const EditModal = ({ book, onEdit }) => {
+    return (
+      <div className="flex flex-col">
+        <p className="text-2xl text-tertiary text-center pb-5">Edit Book</p>
+        <TextInput
+          title="Book Title"
+          placeholder="Enter Book Title"
+          color="brown.6"
+          value={book.name}
+        />
+        <div className="h-5" />
+        <Select
+          placeholder="Select Genre"
+          data={[
+            "Handmade Goods",
+            "Jewelry",
+            "Home Decor",
+            "Clothing",
+            "Arts",
+            "Vintage Items",
+            "Photography",
+            "Cosmetics",
+            "Toys",
+          ]}
+          value={book.genre}
+          // value={credentials.category}
+          // onChange={(e) => {
+          //   if (e !== null) {
+          //     setCredentials({ ...credentials, category: e });
+          //   }
+          // }}
+        />
+        <div className="h-5" />
+        <TextInput
+          title="Book Author"
+          placeholder="Enter Book Author"
+          color="brown.6"
+          value={book.author}
+        />
+        <div className="h-5" />
+
+        <Textarea
+          title="Book Decription"
+          placeholder="Enter Book Description"
+          color="brown.6"
+          value={book.description}
+        />
+        <div className="h-10" />
+
+        <button
+          onClick={onEdit}
+          className="w-full rounded-lg bg-primary text-white font-medium py-2"
+        >
+          Upload
+        </button>
+      </div>
+    );
+  };
+
   return (
     <>
       <ToastContainer
@@ -166,64 +305,61 @@ const Books = () => {
               </button>
             </div>
           </div>
-          {!loading && books.length > 0 && (
-            <>
-              <div className="my-20 flex flex-wrap gap-10">
-                {books.map((book, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className="bg-white flex flex-col shadow-lg rounded-lg w-[250px] h-[250px]"
-                    >
-                      {/* <Image
-                src={book.image}
-                alt=""
-                className="w-full h-[120px] object-contain pt-5"
-              /> */}
 
-                      <div className="w-full h-[120px] pt-5" />
-                      <div className="px-2 flex flex-col">
-                        <p className="font-medium text-xl text-center text-slate-950">
-                          {book.title}
-                        </p>
-                        <p className="text-md text-center text-slate-950">
-                          By: {book.author}
-                        </p>
-                        <div className="flex gap-5 justify-around items-center text-tertiary my-5">
-                          <div
-                            className="py-2 w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
-                            onClick={() => openEdit(book)}
-                          >
-                            Edit
-                            <MdEdit size={20} />
-                          </div>
-                          <div
-                            onClick={() => openDelete(book)}
-                            className="py-2  w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
-                          >
-                            Delete
-                            <MdDelete size={20} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <Modal
-                opened={opened}
-                onClose={() => setOpened(false)}
-                color="brown.6"
-              >
-                {flag === 0 ? (
+          <Modal opened={opened} onClose={close} color="brown.6">
+            <AddModal />
+            {/* {flag === 0 ? (
                   <EditModal book={selectedBook} onEdit={close} />
                 ) : flag === 1 ? (
                   <DeleteModal book={selectedBook} onCancel={close} />
                 ) : (
                   <AddModal onUpload={close} genres={genres} />
-                )}
-              </Modal>
-            </>
+                )} */}
+          </Modal>
+
+          {!loading && books.length > 0 && (
+            <div className="my-20 flex flex-wrap gap-10">
+              {books.map((book, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="bg-white flex flex-col shadow-lg rounded-lg w-[250px] h-[250px]"
+                  >
+                    {/* <Image
+                src={book.image}
+                alt=""
+                className="w-full h-[120px] object-contain pt-5"
+              /> */}
+
+                    <div className="w-full h-[120px] pt-5" />
+                    <div className="px-2 flex flex-col">
+                      <p className="font-medium text-xl text-center text-slate-950">
+                        {book.title}
+                      </p>
+                      <p className="text-md text-center text-slate-950">
+                        By: {book.author}
+                      </p>
+                      <div className="flex gap-5 justify-around items-center text-tertiary my-5">
+                        <div
+                          className="py-2 w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
+                          onClick={() => openEdit(book)}
+                        >
+                          Edit
+                          <MdEdit size={20} />
+                        </div>
+                        <div
+                          onClick={() => openDelete(book)}
+                          className="py-2  w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
+                        >
+                          Delete
+                          <MdDelete size={20} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       )}
@@ -243,149 +379,4 @@ const Books = () => {
   );
 };
 
-const AddModal = ({ genres, onUpload }) => {
-  return (
-    <div className="flex flex-col">
-      <p className="text-2xl text-tertiary text-center pb-5">Add New Book?</p>
-      <TextInput
-        title="Book Title"
-        placeholder="Enter Book Title"
-        color="brown.6"
-      />
-      <div className="h-5" />
-      <Select
-        placeholder="Select Genre"
-        data={genres.map((genre, i) => {
-          return genre.name;
-        })}
-        // value={credentials.category}
-        // onChange={(e) => {
-        //   if (e !== null) {
-        //     setCredentials({ ...credentials, category: e });
-        //   }
-        // }}
-      />
-      <div className="h-5" />
-      <TextInput
-        title="Book Author"
-        placeholder="Enter Book Author"
-        color="brown.6"
-      />
-      <div className="h-5" />
-
-      <Textarea
-        title="Book Decription"
-        placeholder="Enter Book Description"
-        color="brown.6"
-      />
-      <div className="h-10" />
-
-      <button
-        onClick={onUpload}
-        className="w-full rounded-lg bg-primary text-white font-medium py-2"
-      >
-        Upload
-      </button>
-    </div>
-  );
-};
-
-const DeleteModal = ({ book, onCancel }) => {
-  return (
-    <div className="flex flex-col">
-      <p className="text-2xl text-tertiary text-center mt-5">
-        Are you sure you want to delete this book?
-      </p>
-      <div className="flex items-center justify-around w-full mt-5">
-        <Image src={book.image} alt="" className="" />
-        <div className="flex flex-col w-[50%]">
-          <p>{book.name}</p>
-          <p>By {book.author}</p>
-        </div>
-      </div>
-      <div className="flex justify-around py-5">
-        <button
-          className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
-          onClick={onCancel}
-        >
-          Cancel
-        </button>
-        <button
-          className="w-[40%] bg-red-700 py-2 rounded-lg text-white font-medium"
-          onClick={onCancel}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const EditModal = ({ book, onEdit }) => {
-  return (
-    <div className="flex flex-col">
-      <p className="text-2xl text-tertiary text-center pb-5">Edit Book</p>
-      <TextInput
-        title="Book Title"
-        placeholder="Enter Book Title"
-        color="brown.6"
-        value={book.name}
-      />
-      <div className="h-5" />
-      <Select
-        placeholder="Select Genre"
-        data={[
-          "Handmade Goods",
-          "Jewelry",
-          "Home Decor",
-          "Clothing",
-          "Arts",
-          "Vintage Items",
-          "Photography",
-          "Cosmetics",
-          "Toys",
-        ]}
-        value={book.genre}
-        // value={credentials.category}
-        // onChange={(e) => {
-        //   if (e !== null) {
-        //     setCredentials({ ...credentials, category: e });
-        //   }
-        // }}
-      />
-      <div className="h-5" />
-      <TextInput
-        title="Book Author"
-        placeholder="Enter Book Author"
-        color="brown.6"
-        value={book.author}
-      />
-      <div className="h-5" />
-
-      <Textarea
-        title="Book Decription"
-        placeholder="Enter Book Description"
-        color="brown.6"
-        value={book.description}
-      />
-      <div className="h-10" />
-
-      <button
-        onClick={onEdit}
-        className="w-full rounded-lg bg-primary text-white font-medium py-2"
-      >
-        Upload
-      </button>
-    </div>
-  );
-};
-
 export default Books;
-
-const model = {
-  name: "Name",
-  image: "Image",
-  author: "Author",
-  description: "Description",
-  genre: "Genre",
-};
