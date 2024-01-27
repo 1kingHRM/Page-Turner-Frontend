@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
 
 import Chart from "chart.js/auto";
@@ -6,32 +6,36 @@ import Chart from "chart.js/auto";
 import { motion } from "framer-motion";
 
 const Overview = () => {
-  const overviews = [
-    {
-      name: "Total Books",
-      value: 34,
-      previous: 15,
-      total: 65,
-    },
-    {
-      name: "New Books",
-      value: 56,
-      previous: 72,
-      total: 150,
-    },
-    {
-      name: "New Members",
-      value: 34,
-      previous: 15,
-      total: 65,
-    },
-    {
-      name: "Total Members",
-      value: 56,
-      previous: 72,
-      total: 150,
-    },
-  ];
+  const [overviews, setOverviews] = useState([]);
+
+  useEffect(() => {
+    setOverviews([
+      {
+        name: "Total Books",
+        value: 34,
+        previous: 15,
+        total: 65,
+      },
+      {
+        name: "New Books",
+        value: 56,
+        previous: 72,
+        total: 150,
+      },
+      {
+        name: "New Members",
+        value: 34,
+        previous: 15,
+        total: 65,
+      },
+      {
+        name: "Total Members",
+        value: 56,
+        previous: 72,
+        total: 150,
+      },
+    ]);
+  }, []);
 
   function isGreater(overview) {
     return overview.value > overview.previous;

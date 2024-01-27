@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Image from "next/image";
-import { Loader, TextInput, Modal } from "@mantine/core";
+import { Loader, Modal } from "@mantine/core";
+
+import axios from "axios";
+import baseUrl from "@/src/constants/api";
 
 const Settings = () => {
   const [opened, setOpen] = useState(false);
@@ -18,6 +20,24 @@ const Settings = () => {
 
   function clearDatabase() {
     setProcessing(true);
+    let userData = window.localStorage.getItem("page-turner");
+    userData = JSON.parse(userData);
+    axios({
+      method: "DELETE",
+      url: `${baseUrl}/${
+        flag === 0 ? "books" : flag === 1 ? "genres" : ""
+      }/delete`,
+      headers: { Authorization: `Bearer ${userData.token}` },
+    })
+      .then((res) => {
+        toast.success(`Cleared the database successfully`);
+        setProcessing(false);
+        close();
+      })
+      .catch((err) => {
+        toast.error(`Could not clear the database`);
+        setProcessing(false);
+      });
   }
 
   return (
