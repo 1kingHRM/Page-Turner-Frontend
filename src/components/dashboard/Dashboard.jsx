@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 
-
-
 import Link from "next/link";
 
 import { CiLogout } from "react-icons/ci";
@@ -11,29 +9,34 @@ import { CiLogout } from "react-icons/ci";
 import Image from "next/image";
 import Logo from "@/public/Logo.png";
 
-import { MdDashboard, MdAutoStories, MdAir } from "react-icons/md";
+import { MdDashboard, MdAutoStories, MdAir, MdSettings } from "react-icons/md";
 
 import Overview from "./Overview";
 import Genres from "./Genres";
 import Books from "./Books";
+import Settings from "./Settings";
 
 const Dashboard = () => {
-
   const navs = [
     {
       name: "Overview",
       icon: <MdDashboard size={26} />,
-      component: <Overview />
+      component: <Overview />,
     },
     {
       name: "Books",
       icon: <MdAutoStories size={26} />,
-      component: <Books />
+      component: <Books />,
     },
     {
       name: "Genres",
       icon: <MdAir size={26} />,
-      component: <Genres />
+      component: <Genres />,
+    },
+    {
+      name: "Settings",
+      icon: <MdSettings size={26} />,
+      component: <Settings />,
     },
   ];
 
@@ -42,15 +45,15 @@ const Dashboard = () => {
   const logout = () => {
     window.localStorage.setItem("page-turner", "");
     window.location.replace("/");
-  }
+  };
 
   useEffect(() => {
     let userData = window.localStorage.getItem("page-turner");
     if (userData === undefined || userData === null || userData.length === 0) {
       window.location.replace("/");
-      return <></>
+      return <></>;
     }
-  }, [])
+  }, []);
 
   return (
     <div className="w-[100vw] h-[100vh] bg-pale flex flex-col">
@@ -64,26 +67,33 @@ const Dashboard = () => {
             Page Turner
           </p>
         </Link>
-        <div className="w-1/3 flex  h-10 items-center justify-around">
-          {
-            navs.map((nav, i) => {
-              return <p key={i} onClick={() => {
-                setActive(i)
-              }} className={`text-2xl cursor-pointer flex gap-2 items-center text-tertiary ${active === i && "font-[600] underline"}`} >
-
+        <div className="w-2/5 flex  h-10 items-center justify-around">
+          {navs.map((nav, i) => {
+            return (
+              <p
+                key={i}
+                onClick={() => {
+                  setActive(i);
+                }}
+                className={`text-2xl cursor-pointer flex gap-2 items-center text-tertiary ${
+                  active === i && "font-[600] underline"
+                }`}
+              >
                 {nav.icon}
                 {nav.name}
               </p>
-            })
-          }
-
+            );
+          })}
         </div>
-        <div onClick={logout} className="flex gap-2 items-center justify-center hover:underline cursor-pointer text-tertiary hover:font-medium text-2xl">
+        <div
+          onClick={logout}
+          className="flex gap-2 items-center justify-center hover:underline cursor-pointer text-tertiary hover:font-medium text-2xl"
+        >
           Logout
           <CiLogout size={22} />
         </div>
       </div>
-      <div className="overflow-y-scroll h-[90vh] scrollbar-custom bg-secondary">
+      <div className="overflow-y-scroll h-[90vh] bg-secondary">
         {navs[active].component}
       </div>
     </div>

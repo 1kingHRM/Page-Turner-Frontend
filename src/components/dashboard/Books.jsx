@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { MdAutoStories, MdEdit, MdDelete } from "react-icons/md";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { MdAutoStories, MdEdit, MdDelete, MdMenuBook } from "react-icons/md";
 import { Loader, Modal, TextInput, Select, Textarea } from "@mantine/core";
 import Image from "next/image";
-import Arts from "@/public/Arts.png";
 
 import axios from "axios";
 import baseUrl from "@/src/constants/api";
 
 import { toast, ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
 
 import { Document, Page, pdfjs } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.js`;
 
 const Books = () => {
   const [opened, setOpened] = useState(false);
@@ -23,10 +20,23 @@ const Books = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [genres, setGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState("");
+  const [localBookFile, setLocalBookFile] = useState(null);
+  const [modalFlag, setModalFlag] = useState(false);
+  const inputRef = useRef(null);
 
-  const [localBookFile, setLocalBookFile] = useState({});
+  const [bookTitle, setBookTitle] = useState("");
+  const [bookDescription, setBookDescription] = useState("");
+  const [bookAuthor, setBookAuthor] = useState("");
+
+  const [reloadFlag, setReloadFlag] = useState(false);
 
   const close = () => {
+    setBookTitle("");
+    setBookAuthor("");
+    setBookDescription("");
+    setSelectedGenre("");
+    setLocalBookFile(null);
     setOpened(false);
     setFlag(-1);
     setSelectedBook({});
@@ -36,6 +46,11 @@ const Books = () => {
     setOpened(true);
     setFlag(0);
     setSelectedBook(book);
+    setBookTitle(book.title);
+    setBookAuthor(book.author);
+    setBookDescription(book.description);
+    setSelectedGenre(book.genre);
+    setLocalBookFile(book.file);
   };
 
   const openAdd = () => {
@@ -48,6 +63,13 @@ const Books = () => {
     setOpened(true);
     setFlag(1);
     setSelectedBook(book);
+    setBookTitle(book.title);
+    setBookAuthor(book.author);
+    setLocalBookFile(book.file);
+  };
+
+  const openFileDialog = () => {
+    inputRef.current?.click();
   };
 
   function getBooks() {
@@ -90,7 +112,7 @@ const Books = () => {
 
   useEffect(() => {
     getBooks();
-  }, []);
+  }, [reloadFlag]);
 
   function splitWords(text) {
     let splits = text.split(" ");
@@ -123,6 +145,14 @@ const Books = () => {
       });
   }
 
+  function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+    });
+  }
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       onSearch();
@@ -133,10 +163,72 @@ const Books = () => {
     setSearchText(event.target.value);
   };
 
-  function uploadBook() {}
+  function deleteBook() {
+    setModalFlag(true);
+    let userData = window.localStorage.getItem("page-turner");
+    userData = JSON.parse(userData);
+
+    axios({
+      method: "DELETE",
+      url: `${baseUrl}/books/delete/${selectedBook._id}`,
+      headers: { Authorization: `Bearer ${userData.token}` },
+    })
+      .then((res) => {
+        setModalFlag(false);
+        toast.success("Deleted the book successfully");
+        close();
+        setReloadFlag(!reloadFlag);
+      })
+      .catch((err) => {
+        toast.error("Could not delete the books");
+        setModalFlag(false);
+      });
+  }
+
+  function uploadBook() {
+    setModalFlag(true);
+    let userData = window.localStorage.getItem("page-turner");
+    userData = JSON.parse(userData);
+
+    let data = {
+      title: bookTitle,
+      description: bookDescription,
+      author: bookAuthor,
+      file: localBookFile,
+      genre: selectedGenre,
+    };
+
+    axios({
+      method: "POST",
+      url: `${baseUrl}/books/create`,
+      data: data,
+      headers: { Authorization: `Bearer ${userData.token}` },
+    })
+      .then((res) => {
+        setModalFlag(false);
+        toast.success("Uploaded the book successfully");
+        setReloadFlag(!reloadFlag);
+        close();
+      })
+      .catch((err) => {
+        toast.error("Could not fetch the books from the server");
+        setModalFlag(false);
+      });
+  }
 
   const UploadFile = () => {
-    return localBookFile.path.path ? (
+    return localBookFile !== null ? (
+      <div className=" w-full h-[200px] overflow-x-hidden">
+        <Document file={localBookFile}>
+          <Page
+            pageNumber={1}
+            width={400}
+            height={200}
+            renderTextLayer={false}
+          />
+        </Document>
+      </div>
+    ) : (
       <>
         <input
           type="file"
@@ -149,37 +241,41 @@ const Books = () => {
             if (file !== undefined) {
               getBase64(file)
                 .then((res) => {
-                  setLocalBookFile(file);
+                  setLocalBookFile(res);
                 })
                 .catch((err) => {
-                  setLocalBookFile({});
+                  setLocalBookFile(null);
                 });
             }
           }}
         />
 
         <div
-          onClick={openDialog}
-          className="w-full cursor-pointer h-[420px] bg-neutral-50 rounded border border-pink-800 justify-center items-center gap-2.5 inline-flex"
+          onClick={openFileDialog}
+          className="w-full cursor-pointer h-[200px] bg-pale rounded border border-primary justify-center items-center gap-2.5 inline-flex"
         >
           <div className="flex-col justify-start items-center gap-4 inline-flex">
             <div className="flex-col justify-start items-center gap-2 flex text-center">
-              <p className="text-slate-950 lg:text-2xl text-xl font-medium leading-9">
-                Select an image to upload
+              <p className="text-tertiary lg:text-2xl text-xl font-medium leading-9">
+                Select a book to upload
               </p>
-              <p className="text-slate-950 text-center px-[5%] lg:text-base text-[14px] font-normal leading-loose">
-                Upload max of 20MB Png, Jpg and Svg format of the image
-              </p>
+              <MdMenuBook color="#341008" size={"26px"} />
             </div>
           </div>
         </div>
       </>
-    ) : (
-      <div></div>
     );
   };
 
   const AddModal = () => {
+    if (modalFlag) {
+      return (
+        <div className="flex flex-col w-full h-40 items-center justify-center">
+          <Loader color="brown.6" />
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col">
         <p className="text-2xl text-tertiary text-center pb-5">Add New Book?</p>
@@ -187,6 +283,8 @@ const Books = () => {
           title="Book Title"
           placeholder="Enter Book Title"
           color="brown.6"
+          value={bookTitle}
+          onChange={(e) => setBookTitle(e.target.value)}
         />
         <div className="h-5" />
         <Select
@@ -194,18 +292,20 @@ const Books = () => {
           data={genres.map((genre, i) => {
             return genre.name;
           })}
-          // value={credentials.category}
-          // onChange={(e) => {
-          //   if (e !== null) {
-          //     setCredentials({ ...credentials, category: e });
-          //   }
-          // }}
+          value={selectedGenre}
+          onChange={(e) => {
+            if (e !== null) {
+              setSelectedGenre(e);
+            }
+          }}
         />
         <div className="h-5" />
         <TextInput
           title="Book Author"
           placeholder="Enter Book Author"
           color="brown.6"
+          value={bookAuthor}
+          onChange={(e) => setBookAuthor(e.target.value)}
         />
         <div className="h-5" />
 
@@ -213,13 +313,14 @@ const Books = () => {
           title="Book Decription"
           placeholder="Enter Book Description"
           color="brown.6"
+          value={bookDescription}
+          onChange={(e) => setBookDescription(e.target.value)}
         />
         <div className="h-10" />
 
-        <Document file="/path/to/your/file.pdf">
-          <Page pageNumber={1} />
-        </Document>
+        <UploadFile />
 
+        <div className="h-10" />
         <button
           onClick={uploadBook}
           className="w-full rounded-lg bg-primary text-white font-medium py-2"
@@ -230,29 +331,36 @@ const Books = () => {
     );
   };
 
-  const DeleteModal = ({ book, onCancel }) => {
+  const DeleteModal = () => {
     return (
       <div className="flex flex-col">
         <p className="text-2xl text-tertiary text-center mt-5">
           Are you sure you want to delete this book?
         </p>
         <div className="flex items-center justify-around w-full mt-5">
-          <Image src={book.image} alt="" className="" />
+          <Document file={localBookFile}>
+            <Page
+              pageNumber={1}
+              width={400}
+              height={200}
+              renderTextLayer={false}
+            />
+          </Document>
           <div className="flex flex-col w-[50%]">
-            <p>{book.name}</p>
-            <p>By {book.author}</p>
+            <p>{bookTitle}</p>
+            <p>By {bookAuthor}</p>
           </div>
         </div>
         <div className="flex justify-around py-5">
           <button
             className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
-            onClick={onCancel}
+            onClick={close}
           >
             Cancel
           </button>
           <button
             className="w-[40%] bg-red-700 py-2 rounded-lg text-white font-medium"
-            onClick={onCancel}
+            onClick={deleteBook}
           >
             Delete
           </button>
@@ -261,7 +369,15 @@ const Books = () => {
     );
   };
 
-  const EditModal = ({ book, onEdit }) => {
+  const EditModal = () => {
+    if (modalFlag) {
+      return (
+        <div className="flex flex-col w-full h-40 items-center justify-center">
+          <Loader color="brown.6" />
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col">
         <p className="text-2xl text-tertiary text-center pb-5">Edit Book</p>
@@ -269,36 +385,29 @@ const Books = () => {
           title="Book Title"
           placeholder="Enter Book Title"
           color="brown.6"
-          value={book.name}
+          value={bookTitle}
+          onChange={(e) => setBookTitle(e.target.value)}
         />
         <div className="h-5" />
         <Select
           placeholder="Select Genre"
-          data={[
-            "Handmade Goods",
-            "Jewelry",
-            "Home Decor",
-            "Clothing",
-            "Arts",
-            "Vintage Items",
-            "Photography",
-            "Cosmetics",
-            "Toys",
-          ]}
-          value={book.genre}
-          // value={credentials.category}
-          // onChange={(e) => {
-          //   if (e !== null) {
-          //     setCredentials({ ...credentials, category: e });
-          //   }
-          // }}
+          data={genres.map((genre, i) => {
+            return genre.name;
+          })}
+          value={selectedGenre}
+          onChange={(e) => {
+            if (e !== null) {
+              setSelectedGenre(e);
+            }
+          }}
         />
         <div className="h-5" />
         <TextInput
           title="Book Author"
           placeholder="Enter Book Author"
           color="brown.6"
-          value={book.author}
+          value={bookAuthor}
+          onChange={(e) => setBookAuthor(e.target.value)}
         />
         <div className="h-5" />
 
@@ -306,12 +415,13 @@ const Books = () => {
           title="Book Decription"
           placeholder="Enter Book Description"
           color="brown.6"
-          value={book.description}
+          value={bookDescription}
+          onChange={(e) => setBookDescription(e.target.value)}
         />
         <div className="h-10" />
 
         <button
-          onClick={onEdit}
+          onClick={uploadBook}
           className="w-full rounded-lg bg-primary text-white font-medium py-2"
         >
           Upload
@@ -360,14 +470,9 @@ const Books = () => {
           </div>
 
           <Modal opened={opened} onClose={close} color="brown.6">
-            <AddModal />
-            {/* {flag === 0 ? (
-                  <EditModal book={selectedBook} onEdit={close} />
-                ) : flag === 1 ? (
-                  <DeleteModal book={selectedBook} onCancel={close} />
-                ) : (
-                  <AddModal onUpload={close} genres={genres} />
-                )} */}
+            {flag === 0 && <EditModal />}
+            {flag === 1 && <DeleteModal />}
+            {flag === 2 && <AddModal />}
           </Modal>
 
           {!loading && books.length > 0 && (
@@ -378,11 +483,14 @@ const Books = () => {
                     key={i}
                     className="bg-white flex flex-col shadow-lg rounded-lg w-[250px] h-[250px]"
                   >
-                    {/* <Image
-                src={book.image}
-                alt=""
-                className="w-full h-[120px] object-contain pt-5"
-              /> */}
+                    <Document file={book.file}>
+                      <Page
+                        pageNumber={1}
+                        width={400}
+                        height={200}
+                        renderTextLayer={false}
+                      />
+                    </Document>
 
                     <div className="w-full h-[120px] pt-5" />
                     <div className="px-2 flex flex-col">
