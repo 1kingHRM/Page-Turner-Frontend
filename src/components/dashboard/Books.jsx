@@ -12,6 +12,9 @@ import { toast, ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
+import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.js`;
+
 const Books = () => {
   const [opened, setOpened] = useState(false);
   const [flag, setFlag] = useState(-1);
@@ -20,6 +23,8 @@ const Books = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [genres, setGenres] = useState([]);
+
+  const [localBookFile, setLocalBookFile] = useState({});
 
   const close = () => {
     setOpened(false);
@@ -130,6 +135,50 @@ const Books = () => {
 
   function uploadBook() {}
 
+  const UploadFile = () => {
+    return localBookFile.path.path ? (
+      <>
+        <input
+          type="file"
+          ref={inputRef}
+          multiple={false}
+          accept=".pdf"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file !== undefined) {
+              getBase64(file)
+                .then((res) => {
+                  setLocalBookFile(file);
+                })
+                .catch((err) => {
+                  setLocalBookFile({});
+                });
+            }
+          }}
+        />
+
+        <div
+          onClick={openDialog}
+          className="w-full cursor-pointer h-[420px] bg-neutral-50 rounded border border-pink-800 justify-center items-center gap-2.5 inline-flex"
+        >
+          <div className="flex-col justify-start items-center gap-4 inline-flex">
+            <div className="flex-col justify-start items-center gap-2 flex text-center">
+              <p className="text-slate-950 lg:text-2xl text-xl font-medium leading-9">
+                Select an image to upload
+              </p>
+              <p className="text-slate-950 text-center px-[5%] lg:text-base text-[14px] font-normal leading-loose">
+                Upload max of 20MB Png, Jpg and Svg format of the image
+              </p>
+            </div>
+          </div>
+        </div>
+      </>
+    ) : (
+      <div></div>
+    );
+  };
+
   const AddModal = () => {
     return (
       <div className="flex flex-col">
@@ -166,6 +215,10 @@ const Books = () => {
           color="brown.6"
         />
         <div className="h-10" />
+
+        <Document file="/path/to/your/file.pdf">
+          <Page pageNumber={1} />
+        </Document>
 
         <button
           onClick={uploadBook}
