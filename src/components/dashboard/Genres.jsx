@@ -34,7 +34,7 @@ const Genres = () => {
         setLoading(false);
       });
     }
-  }, [genres, loading])
+  }, [])
 
   function splitWords(text) {
     let splits = text.split(" ");

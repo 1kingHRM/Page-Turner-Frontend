@@ -45,43 +45,47 @@ const Books = () => {
     setSelectedBook(book);
   };
 
+  function getBooks() {
+    setLoading(true);
+    let userData = window.localStorage.getItem("page-turner");
+    userData = JSON.parse(userData);
 
-  useEffect(() => {
-    if (books.length === 0) {
-      setLoading(true);
-      let userData = window.localStorage.getItem("page-turner");
-      userData = JSON.parse(userData);
-
-      axios({
-        method: "GET",
-        url: `${baseUrl}/books`,
-      }).then((res) => {
-        setBooks(res.data.payload)
-        setLoading(false);
-      }).catch((err) => {
+    axios({
+      method: "GET",
+      url: `${baseUrl}/books`,
+    })
+      .then((res) => {
+        setBooks(res.data.payload);
+        getGenres();
+      })
+      .catch((err) => {
         toast.error("Could not fetch the books from the server");
         setLoading(false);
       });
-    }
+  }
 
+  function getGenres() {
+    setLoading(true);
+    let userData = window.localStorage.getItem("page-turner");
+    userData = JSON.parse(userData);
 
-    if (genres.length === 0) {
-      setLoading(true);
-      let userData = window.localStorage.getItem("page-turner");
-      userData = JSON.parse(userData);
-
-      axios({
-        method: "GET",
-        url: `${baseUrl}/genres`,
-      }).then((res) => {
-        setGenres(res.data.payload)
+    axios({
+      method: "GET",
+      url: `${baseUrl}/genres`,
+    })
+      .then((res) => {
+        setGenres(res.data.payload);
         setLoading(false);
-      }).catch((err) => {
+      })
+      .catch((err) => {
         toast.error("Could not fetch the genres from the server");
         setLoading(false);
       });
-    }
-  }, [books, genres, loading])
+  }
+
+  useEffect(() => {
+    getBooks();
+  }, []);
 
   function splitWords(text) {
     let splits = text.split(" ");
@@ -102,25 +106,27 @@ const Books = () => {
 
     axios({
       method: "GET",
-      url: `${baseUrl}/books/?search=${searchQuery}`
-    }).then((res) => {
-      setLoading(false);
-      setBooks(res.data.payload)
-    }).catch((err) => {
-      toast.error(`${err.response.data.error}`)
-      setLoading(false);
-    });
+      url: `${baseUrl}/books/?search=${searchQuery}`,
+    })
+      .then((res) => {
+        setLoading(false);
+        setBooks(res.data.payload);
+      })
+      .catch((err) => {
+        toast.error(`${err.response.data.error}`);
+        setLoading(false);
+      });
   }
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       onSearch();
     }
-  }
+  };
 
   const onTextChange = (event) => {
     setSearchText(event.target.value);
-  }
+  };
 
   return (
     <>
@@ -132,8 +138,8 @@ const Books = () => {
         rtl={false}
         theme="colored"
       />
-      {
-        !loading && <div className="w-full flex flex-col h-auto px-10">
+      {!loading && (
+        <div className="w-full flex flex-col h-auto px-10">
           <div className="flex flex-row justify-between items-center">
             <div>
               <p className="text-2xl text-slate-950 mt-5 font-medium">Books</p>
@@ -160,71 +166,84 @@ const Books = () => {
               </button>
             </div>
           </div>
-          <div className="my-20 flex flex-wrap gap-10">
-            {books.map((book, i) => {
-              return (
-                <div
-                  key={i}
-                  className="bg-white flex flex-col shadow-lg rounded-lg w-[250px] h-[250px]"
-                >
-                  {/* <Image
+          {!loading && books.length > 0 && (
+            <>
+              <div className="my-20 flex flex-wrap gap-10">
+                {books.map((book, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="bg-white flex flex-col shadow-lg rounded-lg w-[250px] h-[250px]"
+                    >
+                      {/* <Image
                 src={book.image}
                 alt=""
                 className="w-full h-[120px] object-contain pt-5"
               /> */}
 
-                  <div className="w-full h-[120px] pt-5" />
-                  <div className="px-2 flex flex-col">
-                    <p className="font-medium text-xl text-center text-slate-950">
-                      {book.title}
-                    </p>
-                    <p className="text-md text-center text-slate-950">
-                      By: {book.author}
-                    </p>
-                    <div className="flex gap-5 justify-around items-center text-tertiary my-5">
-                      <div
-                        className="py-2 w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
-                        onClick={() => openEdit(book)}
-                      >
-                        Edit
-                        <MdEdit size={20} />
-                      </div>
-                      <div
-                        onClick={() => openDelete(book)}
-                        className="py-2  w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
-                      >
-                        Delete
-                        <MdDelete size={20} />
+                      <div className="w-full h-[120px] pt-5" />
+                      <div className="px-2 flex flex-col">
+                        <p className="font-medium text-xl text-center text-slate-950">
+                          {book.title}
+                        </p>
+                        <p className="text-md text-center text-slate-950">
+                          By: {book.author}
+                        </p>
+                        <div className="flex gap-5 justify-around items-center text-tertiary my-5">
+                          <div
+                            className="py-2 w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
+                            onClick={() => openEdit(book)}
+                          >
+                            Edit
+                            <MdEdit size={20} />
+                          </div>
+                          <div
+                            onClick={() => openDelete(book)}
+                            className="py-2  w-full gap-2 items-center text-white justify-center flex rounded-lg bg-primary cursor-pointer"
+                          >
+                            Delete
+                            <MdDelete size={20} />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <Modal opened={opened} onClose={() => setOpened(false)} color="brown.6">
-            {flag === 0 ? (
-              <EditModal book={selectedBook} onEdit={close} />
-            ) : flag === 1 ? (
-              <DeleteModal book={selectedBook} onCancel={close} />
-            ) : (
-              <AddModal onUpload={close} genres={genres} />
-            )}
-          </Modal>
+                  );
+                })}
+              </div>
+              <Modal
+                opened={opened}
+                onClose={() => setOpened(false)}
+                color="brown.6"
+              >
+                {flag === 0 ? (
+                  <EditModal book={selectedBook} onEdit={close} />
+                ) : flag === 1 ? (
+                  <DeleteModal book={selectedBook} onCancel={close} />
+                ) : (
+                  <AddModal onUpload={close} genres={genres} />
+                )}
+              </Modal>
+            </>
+          )}
         </div>
-      }
+      )}
 
+      {!loading && books.length === 0 && (
+        <div className="h-full w-full flex-col text-3xl font-medium text-tertiary flex justify-center items-center">
+          There are no books yet in the database.
+        </div>
+      )}
 
-      {
-        loading && <div className="h-44 w-full flex flex-col justify-center items-center ">
+      {loading && (
+        <div className="h-full w-full flex flex-col justify-center items-center ">
           <Loader color="brown.6" />
         </div>
-      }
+      )}
     </>
   );
 };
 
-const AddModal = ({genres,  onUpload }) => {
+const AddModal = ({ genres, onUpload }) => {
   return (
     <div className="flex flex-col">
       <p className="text-2xl text-tertiary text-center pb-5">Add New Book?</p>
@@ -236,13 +255,15 @@ const AddModal = ({genres,  onUpload }) => {
       <div className="h-5" />
       <Select
         placeholder="Select Genre"
-        data={genres.map((genre, i) => {return genre.name})}
-      // value={credentials.category}
-      // onChange={(e) => {
-      //   if (e !== null) {
-      //     setCredentials({ ...credentials, category: e });
-      //   }
-      // }}
+        data={genres.map((genre, i) => {
+          return genre.name;
+        })}
+        // value={credentials.category}
+        // onChange={(e) => {
+        //   if (e !== null) {
+        //     setCredentials({ ...credentials, category: e });
+        //   }
+        // }}
       />
       <div className="h-5" />
       <TextInput
@@ -325,12 +346,12 @@ const EditModal = ({ book, onEdit }) => {
           "Toys",
         ]}
         value={book.genre}
-      // value={credentials.category}
-      // onChange={(e) => {
-      //   if (e !== null) {
-      //     setCredentials({ ...credentials, category: e });
-      //   }
-      // }}
+        // value={credentials.category}
+        // onChange={(e) => {
+        //   if (e !== null) {
+        //     setCredentials({ ...credentials, category: e });
+        //   }
+        // }}
       />
       <div className="h-5" />
       <TextInput
