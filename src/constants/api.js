@@ -1,3 +1,3 @@
-//const baseUrl = "https://page-turner.onrender.com/api";
-const baseUrl = "http://localhost:3030/api";
+const baseUrl = "https://page-turner.onrender.com/api";
+
 module.exports = baseUrl;
