@@ -133,7 +133,7 @@ const Settings = () => {
             </p>
             <div className="flex justify-around pb-5 pt-10">
               <button
-                className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
+                className="w-[40%] border-[1.5px] text-tertiary border-tertiary py-2 rounded-lg"
                 onClick={close}
               >
                 Cancel

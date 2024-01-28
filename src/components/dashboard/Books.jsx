@@ -31,6 +31,7 @@ const Books = () => {
   const [bookAuthor, setBookAuthor] = useState("");
 
   const [reloadFlag, setReloadFlag] = useState(false);
+  const [bookId, setBookId] = useState("");
 
   const close = () => {
     setBookTitle("");
@@ -41,6 +42,7 @@ const Books = () => {
     setOpened(false);
     setFlag(-1);
     setSelectedBook({});
+    setBookId("");
   };
 
   const openEdit = (book) => {
@@ -52,6 +54,7 @@ const Books = () => {
     setBookDescription(book.description);
     setSelectedGenre(book.genre.name);
     setLocalBookFile(book.file);
+    setBookId(book.id);
   };
 
   const openAdd = () => {
@@ -191,9 +194,14 @@ const Books = () => {
       genre: selectedGenre,
     };
 
+    if (edit) {
+      data.genre = selectedGenre._id;
+      data._id = bookId;
+    }
+
     axios({
-      method: "POST",
-      url: `${baseUrl}/books/create`,
+      method: edit ? "PUT" : "POST",
+      url: `${baseUrl}/books/${edit ? "edit" : "create"}`,
       data: data,
       headers: { Authorization: `Bearer ${userData.token}` },
     })
@@ -394,7 +402,7 @@ const UploadFile = ({
               .then((res) => {
                 setLocalBookFile(res);
               })
-              .catch((err) => {
+              .catch((_) => {
                 setLocalBookFile(null);
               });
           }
@@ -532,7 +540,7 @@ const DeleteModal = ({
       </div>
       <div className="flex justify-around py-5">
         <button
-          className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
+          className="w-[40%] border-[1.5px] text-tertiary border-tertiary py-2 rounded-lg"
           onClick={close}
         >
           Cancel

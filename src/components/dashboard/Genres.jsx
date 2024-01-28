@@ -391,7 +391,7 @@ const DeleteModalComponent = ({ currentGenre, cancel, deleteGenre }) => {
       </p>
       <div className="flex justify-around py-5">
         <button
-          className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
+          className="w-[40%] border-[1.5px] text-tertiary border-tertiary py-2 rounded-lg"
           onClick={cancel}
         >
           Cancel
