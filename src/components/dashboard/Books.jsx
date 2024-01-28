@@ -207,12 +207,12 @@ const Books = () => {
     })
       .then((res) => {
         setModalFlag(false);
-        toast.success("Uploaded the book successfully");
+        toast.success(`${edit ? "Edited" : "Created"} the book successfully`);
         setReloadFlag(!reloadFlag);
         close();
       })
       .catch((err) => {
-        toast.error("Could not fetch the books from the server");
+        toast.error(`Could not ${edit ? "edit" : "create"} the book`);
         setModalFlag(false);
       });
   }

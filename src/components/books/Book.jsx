@@ -42,9 +42,9 @@ const Book = ({ id }) => {
       data: {
         bookId: id,
       },
-    });
-
-    window.location.href = book.file;
+    })
+      .then((res) => (window.location.href = book.file))
+      .catch((err) => (window.location.href = book.file));
   }
 
   return (
