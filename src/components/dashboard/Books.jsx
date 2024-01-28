@@ -181,7 +181,7 @@ const Books = () => {
       });
   }
 
-  function uploadBook(edit = false) {
+  function uploadBook(edit) {
     setModalFlag(true);
     let userData = window.localStorage.getItem("page-turner");
     userData = JSON.parse(userData);
@@ -293,7 +293,7 @@ const Books = () => {
                 setBookAuthor={setBookAuthor}
                 bookDescription={bookDescription}
                 setBookDescription={setBookDescription}
-                uploadBook={uploadBook}
+                uploadBook={() => uploadBook(false)}
                 inputRef={inputRef}
                 localBookFile={localBookFile}
                 openFileDialog={openFileDialog}
@@ -310,16 +310,16 @@ const Books = () => {
                     key={i}
                     className="bg-white flex flex-col shadow-lg rounded-lg w-[250px] h-[250px]"
                   >
-                    <Document file={book.file}>
-                      <Page
-                        pageNumber={1}
-                        width={400}
-                        height={200}
-                        renderTextLayer={false}
-                      />
-                    </Document>
-
-                    <div className="w-full h-[120px] pt-5" />
+                    <div className=" w-full h-[200px] overflow-hidden">
+                      <Document file={book.file}>
+                        <Page
+                          pageNumber={1}
+                          width={200}
+                          height={200}
+                          renderTextLayer={false}
+                        />
+                      </Document>
+                    </div>
                     <div className="px-2 flex flex-col">
                       <p className="font-medium text-xl text-center text-slate-950">
                         {book.title}

@@ -71,18 +71,18 @@ const Book = ({ id }) => {
             <h2 className="lg:text-2xl text-xl text-tertiary text-center">
               Written by {book.author}
             </h2>
-            <div className="h-[60vh] w-[100%] my-5">
+            <div className=" w-full h-[500px] scrollbar-custom overflow-scroll mt-5">
               <Document file={book.file}>
                 <Page
                   pageNumber={1}
                   width={1024}
-                  height={400}
+                  height={500}
                   renderTextLayer={false}
                 />
               </Document>
             </div>
 
-            <p className="text-xl lg:text-2xl text-tertiary font-normal text-start">
+            <p className="text-xl lg:text-2xl text-tertiary font-normal text-start mt-5">
               {book.description}
             </p>
 

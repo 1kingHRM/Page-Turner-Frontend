@@ -61,7 +61,7 @@ const Genres = () => {
     return value;
   }
 
-  const uploadGenre = (edit = false) => {
+  const uploadGenre = (edit) => {
     setUploading(true);
     let userData = window.localStorage.getItem("page-turner");
     userData = JSON.parse(userData);
@@ -212,7 +212,7 @@ const Genres = () => {
               <AddModalComponent
                 genreName={genreName}
                 setGenreName={setGenreName}
-                uploadGenre={uploadGenre}
+                uploadGenre={() => uploadGenre(false)}
                 uploading={uploading}
               />
             )}
@@ -220,7 +220,7 @@ const Genres = () => {
               <EditModalComponent
                 genreName={genreName}
                 setGenreName={setGenreName}
-                uploadGenre={uploadGenre}
+                uploadGenre={() => uploadGenre(true)}
                 uploading={uploading}
               />
             )}
@@ -365,7 +365,7 @@ const EditModalComponent = ({
           />
 
           <button
-            onClick={() => uploadGenre(true)}
+            onClick={uploadGenre}
             className="w-full mt-5 rounded-lg bg-primary text-white font-medium py-2"
           >
             Update

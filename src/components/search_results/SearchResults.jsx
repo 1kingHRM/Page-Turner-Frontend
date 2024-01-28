@@ -82,7 +82,7 @@ const SearchResults = ({ search }) => {
                 href={`/book/${book._id}`}
                 className="flex flex-col w-[250px] h-[280px]"
               >
-                <div className="shadow-lg rounded-lg w-[250px] h-[220px]">
+                <div className=" w-[250px] h-[220px] overflow-x-hidden overflow-y-hidden">
                   <Document file={book.file}>
                     <Page
                       pageNumber={1}
