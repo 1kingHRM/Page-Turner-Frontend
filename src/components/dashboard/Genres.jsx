@@ -160,97 +160,6 @@ const Genres = () => {
     onSearch(event.target.value);
   };
 
-  const AddModalComponent = () => {
-    return (
-      <>
-        {!uploading && (
-          <div className="flex flex-col">
-            <p className="text-2xl text-tertiary text-center pb-5">Add Genre</p>
-
-            <TextInput
-              title="Genre Name"
-              value={genreName}
-              onChange={(e) => setGenreName(e.target.value)}
-              placeholder="Enter Genre Name"
-            />
-
-            <button
-              onClick={uploadGenre}
-              className="w-full mt-5 rounded-lg bg-primary text-white font-medium py-2"
-            >
-              Upload
-            </button>
-          </div>
-        )}
-
-        {uploading && (
-          <div className="flex flex-col w-full h-32 items-center justify-center">
-            <Loader color="brown.6" />
-          </div>
-        )}
-      </>
-    );
-  };
-
-  const EditModalComponent = () => {
-    return (
-      <>
-        {!uploading && (
-          <div className="flex flex-col">
-            <p className="text-2xl text-tertiary text-center pb-5">
-              Edit Genre
-            </p>
-
-            <TextInput
-              title="Genre Name"
-              value={genreName}
-              onChange={(e) => setGenreName(e.target.value)}
-              placeholder="Enter Genre Name"
-            />
-
-            <button
-              onClick={() => uploadGenre(true)}
-              className="w-full mt-5 rounded-lg bg-primary text-white font-medium py-2"
-            >
-              Update
-            </button>
-          </div>
-        )}
-
-        {uploading && (
-          <div className="flex flex-col w-full h-32 items-center justify-center">
-            <Loader color="brown.6" />
-          </div>
-        )}
-      </>
-    );
-  };
-
-  const DeleteModalComponent = () => {
-    return (
-      <div className="flex flex-col">
-        <p className="text-2xl text-tertiary text-center mt-5">
-          Are you sure you want to delete the{" "}
-          <span className="font-[600]">{currentGenre.name}</span> genre?
-        </p>
-        <div className="flex justify-around py-5">
-          <button
-            className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
-            onClick={cancel}
-          >
-            Cancel
-          </button>
-          <button
-            className="w-[40%] bg-red-700 py-2 rounded-lg text-white font-medium"
-            onClick={deleteGenre}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
       <ToastContainer
@@ -299,9 +208,29 @@ const Genres = () => {
             }}
             color="brown.6"
           >
-            {flag === 0 && <AddModalComponent />}
-            {flag === 1 && <EditModalComponent />}
-            {flag == 2 && <DeleteModalComponent />}
+            {flag === 0 && (
+              <AddModalComponent
+                genreName={genreName}
+                setGenreName={setGenreName}
+                uploadGenre={uploadGenre}
+                uploading={uploading}
+              />
+            )}
+            {flag === 1 && (
+              <EditModalComponent
+                genreName={genreName}
+                setGenreName={setGenreName}
+                uploadGenre={uploadGenre}
+                uploading={uploading}
+              />
+            )}
+            {flag == 2 && (
+              <DeleteModalComponent
+                cancel={cancel}
+                currentGenre={currentGenre}
+                deleteGenre={deleteGenre}
+              />
+            )}
           </Modal>
 
           {searchedGenres.length === 0 && (
@@ -376,6 +305,105 @@ const Genres = () => {
         </div>
       )}
     </>
+  );
+};
+
+const AddModalComponent = ({
+  uploading,
+  genreName,
+  setGenreName,
+  uploadGenre,
+}) => {
+  return (
+    <>
+      {!uploading && (
+        <div className="flex flex-col">
+          <p className="text-2xl text-tertiary text-center pb-5">Add Genre</p>
+
+          <TextInput
+            title="Genre Name"
+            value={genreName}
+            onChange={(e) => setGenreName(e.target.value)}
+            placeholder="Enter Genre Name"
+          />
+
+          <button
+            onClick={uploadGenre}
+            className="w-full mt-5 rounded-lg bg-primary text-white font-medium py-2"
+          >
+            Upload
+          </button>
+        </div>
+      )}
+
+      {uploading && (
+        <div className="flex flex-col w-full h-32 items-center justify-center">
+          <Loader color="brown.6" />
+        </div>
+      )}
+    </>
+  );
+};
+
+const EditModalComponent = ({
+  uploading,
+  genreName,
+  setGenreName,
+  uploadGenre,
+}) => {
+  return (
+    <>
+      {!uploading && (
+        <div className="flex flex-col">
+          <p className="text-2xl text-tertiary text-center pb-5">Edit Genre</p>
+
+          <TextInput
+            title="Genre Name"
+            value={genreName}
+            onChange={(e) => setGenreName(e.target.value)}
+            placeholder="Enter Genre Name"
+          />
+
+          <button
+            onClick={() => uploadGenre(true)}
+            className="w-full mt-5 rounded-lg bg-primary text-white font-medium py-2"
+          >
+            Update
+          </button>
+        </div>
+      )}
+
+      {uploading && (
+        <div className="flex flex-col w-full h-32 items-center justify-center">
+          <Loader color="brown.6" />
+        </div>
+      )}
+    </>
+  );
+};
+
+const DeleteModalComponent = ({ currentGenre, cancel, deleteGenre }) => {
+  return (
+    <div className="flex flex-col">
+      <p className="text-2xl text-tertiary text-center mt-5">
+        Are you sure you want to delete the{" "}
+        <span className="font-[600]">{currentGenre.name}</span> genre?
+      </p>
+      <div className="flex justify-around py-5">
+        <button
+          className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
+          onClick={cancel}
+        >
+          Cancel
+        </button>
+        <button
+          className="w-[40%] bg-red-700 py-2 rounded-lg text-white font-medium"
+          onClick={deleteGenre}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
   );
 };
 

@@ -10,16 +10,19 @@ const Benefits = () => {
     "A clean, minimalist interface that is very easy to navigate",
   ];
   return (
-    <div className="flex flex-col bg-gradient-to-b from-pale to-white lg:h-[70vh] h-auto items-center">
-      <p className="py-20 text-tertiary font-[600] text-4xl underline">
+    <div className="flex flex-col bg-gradient-to-b from-pale to-white h-auto items-center">
+      <p className="py-20 text-tertiary font-[600] text-2xl  lg:text-4xl underline">
         Features
       </p>
-      <div className="flex lg:flex-row flex-col justify-around">
+      <div className="flex flex-col justify-start gap-3 w-full items-start px-[10%]">
         {features.map((feature, i) => {
           return (
-            <div key={i} className={`bg-gradient-to-b from-pale to-secondary   ${i === 1 ? "px-5 py-4 w-[15%]" : "px-3 py-3 w-[15%]" } shadow-xl rounded-lg  `  }>
-             <p>{feature}</p>
-            </div>
+            <p
+              key={i}
+              className="lg:text-2xl text-xl text-tertiary font-medium"
+            >
+              &#8226; {feature}
+            </p>
           );
         })}
       </div>

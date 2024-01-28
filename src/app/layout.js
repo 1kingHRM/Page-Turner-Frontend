@@ -12,8 +12,8 @@ const goudy = Goudy_Bookletter_1911({
 
 export const metadata = {
   title: {
-    template: "%s | Page Turner",
-    default: "Page Turner"
+    template: "%s - Page Turner",
+    default: "Page Turner",
   },
   description: "Download any book, anywhere, anytime.",
 };

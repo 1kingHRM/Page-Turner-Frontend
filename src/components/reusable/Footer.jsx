@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <div className="bg-pale lg:h-[35vh] h-auto flex flex-col lg:px-[10%] px-[5%]">
       <div className="flex mt-10">
-        <div className="flex lg:flex-row flex-col items-center">
+        <div className="flex lg:flex-row flex-col items-center justify-center w-full">
           <Image src={Logo} alt="logo" className="w-[30vh] h-[20vh] " />
           <div className="flex-col flex ">
             <p className="text-xl lg:text-2xl text-tertiary font-medium">

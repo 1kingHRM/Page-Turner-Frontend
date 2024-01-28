@@ -3,14 +3,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Banner from "@/public/Books.png";
-import Logo from "@/public/Logo.png";
 
 import Three from "@/public/Three.png";
 import axios from "axios";
 import baseUrl from "@/src/constants/api";
 
 import { Loader } from "@mantine/core";
+import Footer from "../reusable/Footer";
 
 function scrollToElement(elementID) {
   const element = document.getElementById(elementID);
@@ -40,7 +39,7 @@ const BooksPage = () => {
   }, [genres]);
 
   function search(query) {
-    window.location.href = `/results/Search ${query}`;
+    window.location.href = `/results/search ${query}`;
   }
 
   return (
@@ -85,15 +84,15 @@ const BooksPage = () => {
           Genres
         </p>
         {!loading && (
-          <div className="lg:flex-row lg:flex-wrap flex flex-col lg:gap-10 gap-5 mt-16 lg:px-[10%] px-[5%]">
+          <div className="flex flex-col gap-5 mt-16 lg:px-[10%] px-[5%]">
             {genres.map((genre, i) => {
               return (
                 <Link
                   key={i}
-                  href={`/results/Genre ${genre.name}`}
-                  className="text-2xl hover:underline hover:font-medium text-blue-800"
+                  href={`/results/genre ${genre.name}`}
+                  className="text-2xl hover:underline hover:font-[600] text-tertiary w-fit"
                 >
-                  {genre.name}
+                  &#8226; {genre.name}
                 </Link>
               );
             })}
@@ -106,6 +105,7 @@ const BooksPage = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

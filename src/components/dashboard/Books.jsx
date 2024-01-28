@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MdAutoStories, MdEdit, MdDelete, MdMenuBook } from "react-icons/md";
 import { Loader, Modal, TextInput, Select, Textarea } from "@mantine/core";
+
 import Image from "next/image";
 
 import axios from "axios";
@@ -49,7 +50,7 @@ const Books = () => {
     setBookTitle(book.title);
     setBookAuthor(book.author);
     setBookDescription(book.description);
-    setSelectedGenre(book.genre);
+    setSelectedGenre(book.genre.name);
     setLocalBookFile(book.file);
   };
 
@@ -145,14 +146,6 @@ const Books = () => {
       });
   }
 
-  function getBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-    });
-  }
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       onSearch();
@@ -185,7 +178,7 @@ const Books = () => {
       });
   }
 
-  function uploadBook() {
+  function uploadBook(edit = false) {
     setModalFlag(true);
     let userData = window.localStorage.getItem("page-turner");
     userData = JSON.parse(userData);
@@ -215,220 +208,6 @@ const Books = () => {
         setModalFlag(false);
       });
   }
-
-  const UploadFile = () => {
-    return localBookFile !== null ? (
-      <div className=" w-full h-[200px] overflow-x-hidden">
-        <Document file={localBookFile}>
-          <Page
-            pageNumber={1}
-            width={400}
-            height={200}
-            renderTextLayer={false}
-          />
-        </Document>
-      </div>
-    ) : (
-      <>
-        <input
-          type="file"
-          ref={inputRef}
-          multiple={false}
-          accept=".pdf"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (file !== undefined) {
-              getBase64(file)
-                .then((res) => {
-                  setLocalBookFile(res);
-                })
-                .catch((err) => {
-                  setLocalBookFile(null);
-                });
-            }
-          }}
-        />
-
-        <div
-          onClick={openFileDialog}
-          className="w-full cursor-pointer h-[200px] bg-pale rounded border border-primary justify-center items-center gap-2.5 inline-flex"
-        >
-          <div className="flex-col justify-start items-center gap-4 inline-flex">
-            <div className="flex-col justify-start items-center gap-2 flex text-center">
-              <p className="text-tertiary lg:text-2xl text-xl font-medium leading-9">
-                Select a book to upload
-              </p>
-              <MdMenuBook color="#341008" size={"26px"} />
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  const AddModal = () => {
-    if (modalFlag) {
-      return (
-        <div className="flex flex-col w-full h-40 items-center justify-center">
-          <Loader color="brown.6" />
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex flex-col">
-        <p className="text-2xl text-tertiary text-center pb-5">Add New Book?</p>
-        <TextInput
-          title="Book Title"
-          placeholder="Enter Book Title"
-          color="brown.6"
-          value={bookTitle}
-          onChange={(e) => setBookTitle(e.target.value)}
-        />
-        <div className="h-5" />
-        <Select
-          placeholder="Select Genre"
-          data={genres.map((genre, i) => {
-            return genre.name;
-          })}
-          value={selectedGenre}
-          onChange={(e) => {
-            if (e !== null) {
-              setSelectedGenre(e);
-            }
-          }}
-        />
-        <div className="h-5" />
-        <TextInput
-          title="Book Author"
-          placeholder="Enter Book Author"
-          color="brown.6"
-          value={bookAuthor}
-          onChange={(e) => setBookAuthor(e.target.value)}
-        />
-        <div className="h-5" />
-
-        <Textarea
-          title="Book Decription"
-          placeholder="Enter Book Description"
-          color="brown.6"
-          value={bookDescription}
-          onChange={(e) => setBookDescription(e.target.value)}
-        />
-        <div className="h-10" />
-
-        <UploadFile />
-
-        <div className="h-10" />
-        <button
-          onClick={uploadBook}
-          className="w-full rounded-lg bg-primary text-white font-medium py-2"
-        >
-          Upload
-        </button>
-      </div>
-    );
-  };
-
-  const DeleteModal = () => {
-    return (
-      <div className="flex flex-col">
-        <p className="text-2xl text-tertiary text-center mt-5">
-          Are you sure you want to delete this book?
-        </p>
-        <div className="flex items-center justify-around w-full mt-5">
-          <Document file={localBookFile}>
-            <Page
-              pageNumber={1}
-              width={400}
-              height={200}
-              renderTextLayer={false}
-            />
-          </Document>
-          <div className="flex flex-col w-[50%]">
-            <p>{bookTitle}</p>
-            <p>By {bookAuthor}</p>
-          </div>
-        </div>
-        <div className="flex justify-around py-5">
-          <button
-            className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
-            onClick={close}
-          >
-            Cancel
-          </button>
-          <button
-            className="w-[40%] bg-red-700 py-2 rounded-lg text-white font-medium"
-            onClick={deleteBook}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const EditModal = () => {
-    if (modalFlag) {
-      return (
-        <div className="flex flex-col w-full h-40 items-center justify-center">
-          <Loader color="brown.6" />
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex flex-col">
-        <p className="text-2xl text-tertiary text-center pb-5">Edit Book</p>
-        <TextInput
-          title="Book Title"
-          placeholder="Enter Book Title"
-          color="brown.6"
-          value={bookTitle}
-          onChange={(e) => setBookTitle(e.target.value)}
-        />
-        <div className="h-5" />
-        <Select
-          placeholder="Select Genre"
-          data={genres.map((genre, i) => {
-            return genre.name;
-          })}
-          value={selectedGenre}
-          onChange={(e) => {
-            if (e !== null) {
-              setSelectedGenre(e);
-            }
-          }}
-        />
-        <div className="h-5" />
-        <TextInput
-          title="Book Author"
-          placeholder="Enter Book Author"
-          color="brown.6"
-          value={bookAuthor}
-          onChange={(e) => setBookAuthor(e.target.value)}
-        />
-        <div className="h-5" />
-
-        <Textarea
-          title="Book Decription"
-          placeholder="Enter Book Description"
-          color="brown.6"
-          value={bookDescription}
-          onChange={(e) => setBookDescription(e.target.value)}
-        />
-        <div className="h-10" />
-
-        <button
-          onClick={uploadBook}
-          className="w-full rounded-lg bg-primary text-white font-medium py-2"
-        >
-          Upload
-        </button>
-      </div>
-    );
-  };
 
   return (
     <>
@@ -470,9 +249,49 @@ const Books = () => {
           </div>
 
           <Modal opened={opened} onClose={close} color="brown.6">
-            {flag === 0 && <EditModal />}
-            {flag === 1 && <DeleteModal />}
-            {flag === 2 && <AddModal />}
+            {flag === 0 && (
+              <EditModal
+                modalFlag={modalFlag}
+                bookTitle={bookTitle}
+                setBookTitle={setBookTitle}
+                genres={genres}
+                selectedGenre={selectedGenre}
+                setSelectedGenre={setSelectedGenre}
+                bookAuthor={bookAuthor}
+                setBookAuthor={setBookAuthor}
+                bookDescription={bookDescription}
+                setBookDescription={setBookDescription}
+                uploadBook={() => uploadBook(true)}
+              />
+            )}
+            {flag === 1 && (
+              <DeleteModal
+                bookAuthor={bookAuthor}
+                bookTitle={bookTitle}
+                close={close}
+                deleteBook={deleteBook}
+                localBookFile={localBookFile}
+              />
+            )}
+            {flag === 2 && (
+              <AddModal
+                modalFlag={modalFlag}
+                bookTitle={bookTitle}
+                setBookTitle={setBookTitle}
+                genres={genres}
+                selectedGenre={selectedGenre}
+                setSelectedGenre={setSelectedGenre}
+                bookAuthor={bookAuthor}
+                setBookAuthor={setBookAuthor}
+                bookDescription={bookDescription}
+                setBookDescription={setBookDescription}
+                uploadBook={uploadBook}
+                inputRef={inputRef}
+                localBookFile={localBookFile}
+                openFileDialog={openFileDialog}
+                setLocalBookFile={setLocalBookFile}
+              />
+            )}
           </Modal>
 
           {!loading && books.length > 0 && (
@@ -537,6 +356,268 @@ const Books = () => {
         </div>
       )}
     </>
+  );
+};
+
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+  });
+}
+
+const UploadFile = ({
+  localBookFile,
+  inputRef,
+  setLocalBookFile,
+  openFileDialog,
+}) => {
+  return localBookFile !== null ? (
+    <div className=" w-full h-[200px] overflow-x-hidden">
+      <Document file={localBookFile}>
+        <Page pageNumber={1} width={400} height={200} renderTextLayer={false} />
+      </Document>
+    </div>
+  ) : (
+    <>
+      <input
+        type="file"
+        ref={inputRef}
+        multiple={false}
+        accept=".pdf"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file !== undefined) {
+            getBase64(file)
+              .then((res) => {
+                setLocalBookFile(res);
+              })
+              .catch((err) => {
+                setLocalBookFile(null);
+              });
+          }
+        }}
+      />
+
+      <div
+        onClick={openFileDialog}
+        className="w-full cursor-pointer h-[200px] bg-pale rounded border border-primary justify-center items-center gap-2.5 inline-flex"
+      >
+        <div className="flex-col justify-start items-center gap-4 inline-flex">
+          <div className="flex-col justify-start items-center gap-2 flex text-center">
+            <p className="text-tertiary lg:text-2xl text-xl font-medium leading-9">
+              Select a book to upload
+            </p>
+            <MdMenuBook color="#341008" size={"26px"} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const AddModal = ({
+  modalFlag,
+  bookTitle,
+  setBookTitle,
+  genres,
+  selectedGenre,
+  setSelectedGenre,
+  bookAuthor,
+  setBookAuthor,
+  bookDescription,
+  setBookDescription,
+  uploadBook,
+
+  localBookFile,
+  setLocalBookFile,
+  inputRef,
+  openFileDialog,
+}) => {
+  if (modalFlag) {
+    return (
+      <div className="flex flex-col w-full h-40 items-center justify-center">
+        <Loader color="brown.6" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      <p className="text-2xl text-tertiary text-center pb-5">Add New Book?</p>
+      <TextInput
+        title="Book Title"
+        placeholder="Enter Book Title"
+        color="brown.6"
+        value={bookTitle}
+        onChange={(e) => setBookTitle(e.target.value)}
+      />
+      <div className="h-5" />
+      <Select
+        placeholder="Select Genre"
+        data={genres.map((genre, i) => {
+          return genre.name;
+        })}
+        value={selectedGenre}
+        onChange={(e) => {
+          if (e !== null) {
+            setSelectedGenre(e);
+          }
+        }}
+      />
+      <div className="h-5" />
+      <TextInput
+        title="Book Author"
+        placeholder="Enter Book Author"
+        color="brown.6"
+        value={bookAuthor}
+        onChange={(e) => setBookAuthor(e.target.value)}
+      />
+      <div className="h-5" />
+
+      <Textarea
+        title="Book Decription"
+        placeholder="Enter Book Description"
+        color="brown.6"
+        value={bookDescription}
+        onChange={(e) => setBookDescription(e.target.value)}
+      />
+      <div className="h-10" />
+
+      <UploadFile
+        inputRef={inputRef}
+        localBookFile={localBookFile}
+        openFileDialog={openFileDialog}
+        setLocalBookFile={setLocalBookFile}
+      />
+
+      <div className="h-10" />
+      <button
+        onClick={uploadBook}
+        className="w-full rounded-lg bg-primary text-white font-medium py-2"
+      >
+        Upload
+      </button>
+    </div>
+  );
+};
+
+const DeleteModal = ({
+  localBookFile,
+  bookTitle,
+  bookAuthor,
+  close,
+  deleteBook,
+}) => {
+  return (
+    <div className="flex flex-col">
+      <p className="text-2xl text-tertiary text-center mt-5">
+        Are you sure you want to delete this book?
+      </p>
+      <div className="flex items-center justify-around w-full mt-5">
+        <Document file={localBookFile}>
+          <Page
+            pageNumber={1}
+            width={400}
+            height={200}
+            renderTextLayer={false}
+          />
+        </Document>
+        <div className="flex flex-col w-[50%]">
+          <p>{bookTitle}</p>
+          <p>By {bookAuthor}</p>
+        </div>
+      </div>
+      <div className="flex justify-around py-5">
+        <button
+          className="w-[40%] border-[1.5px] border-black py-2 rounded-lg"
+          onClick={close}
+        >
+          Cancel
+        </button>
+        <button
+          className="w-[40%] bg-red-700 py-2 rounded-lg text-white font-medium"
+          onClick={deleteBook}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const EditModal = ({
+  modalFlag,
+  bookTitle,
+  setBookTitle,
+  genres,
+  selectedGenre,
+  setSelectedGenre,
+  bookAuthor,
+  setBookAuthor,
+  bookDescription,
+  setBookDescription,
+  uploadBook,
+}) => {
+  if (modalFlag) {
+    return (
+      <div className="flex flex-col w-full h-40 items-center justify-center">
+        <Loader color="brown.6" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      <p className="text-2xl text-tertiary text-center pb-5">Edit Book</p>
+      <TextInput
+        title="Book Title"
+        placeholder="Enter Book Title"
+        color="brown.6"
+        value={bookTitle}
+        onChange={(e) => setBookTitle(e.target.value)}
+      />
+      <div className="h-5" />
+      <Select
+        placeholder="Select Genre"
+        data={genres.map((genre, i) => {
+          return genre.name;
+        })}
+        value={selectedGenre}
+        onChange={(e) => {
+          if (e !== null) {
+            setSelectedGenre(e);
+          }
+        }}
+      />
+      <div className="h-5" />
+      <TextInput
+        title="Book Author"
+        placeholder="Enter Book Author"
+        color="brown.6"
+        value={bookAuthor}
+        onChange={(e) => setBookAuthor(e.target.value)}
+      />
+      <div className="h-5" />
+
+      <Textarea
+        title="Book Decription"
+        placeholder="Enter Book Description"
+        color="brown.6"
+        value={bookDescription}
+        onChange={(e) => setBookDescription(e.target.value)}
+      />
+      <div className="h-10" />
+
+      <button
+        onClick={uploadBook}
+        className="w-full rounded-lg bg-primary text-white font-medium py-2"
+      >
+        Upload
+      </button>
+    </div>
   );
 };
 
