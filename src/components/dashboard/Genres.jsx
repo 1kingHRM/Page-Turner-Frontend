@@ -187,7 +187,7 @@ const Genres = () => {
                 value={searchText}
                 onKeyDown={handleKeyDown}
                 onChange={onTextChange}
-                className="focus:outline-none py-2 px-3 border border-tertiary1 rounded-lg w-[300px] text-tertiary bg-offWhite"
+                className="focus:outline-none py-2 px-3 border border-tertiary1 rounded-lg w-[300px] text-tertiary placeholder:text-gray-500 bg-offWhite"
               />
               <button
                 onClick={openAdd}

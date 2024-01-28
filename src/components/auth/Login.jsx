@@ -23,18 +23,16 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
   const signIn = () => {
     let email = document.getElementById("emailID").value;
     let password = document.getElementById("passwordID").value;
 
-
-    if(email.length === 0) {
+    if (email.length === 0) {
       toast.error("Please enter your email");
       return;
     }
 
-    if(password.length === 0) {
+    if (password.length === 0) {
       toast.error("Please enter your password");
       return;
     }
@@ -44,21 +42,22 @@ const Login = () => {
       method: "POST",
       url: `${baseUrl}/user/login`,
       data: {
-        "email": email,
-        "password": password
-      }
-    }).then((res) => {
-      toast.success("Welcome back");
-      setLoading(false);
-      let parsedResponse = JSON.stringify(res.data.payload);
-      window.localStorage.setItem("page-turner", parsedResponse);
-      window.location.replace("/dashboard");
-
-    }).catch((err) => {
-      toast.error(`${err.response.data.error}`)
-      setLoading(false);
-    });
-  }
+        email: email,
+        password: password,
+      },
+    })
+      .then((res) => {
+        toast.success("Welcome back");
+        setLoading(false);
+        let parsedResponse = JSON.stringify(res.data.payload);
+        window.localStorage.setItem("page-turner", parsedResponse);
+        window.location.replace("/dashboard");
+      })
+      .catch((err) => {
+        toast.error(`${err.response.data.error}`);
+        setLoading(false);
+      });
+  };
 
   return (
     <>
@@ -77,8 +76,8 @@ const Login = () => {
             Welcome back to Page Turner
           </p>
 
-          {
-            !loading && <div className="w-full flex flex-col items-center">
+          {!loading && (
+            <div className="w-full flex flex-col items-center">
               <div className="flex flex-col items-start lg:justify-center lg:items-center mt-10 w-full px-[5%]">
                 <div className="flex flex-col w-full lg:w-fit">
                   <p className="text-tertiary text-base font-medium leading-loose mb-1">
@@ -86,7 +85,7 @@ const Login = () => {
                   </p>
                   <input
                     type="email"
-                    className="lg:w-[350px] w-full font-normal border border-faintBlack px-2 py-2.5 focus:outline-none rounded-sm mb-3"
+                    className="lg:w-[350px] w-full font-normal text-tertiary placeholder:text-gray-500 border border-faintBlack px-2 py-2.5 focus:outline-none rounded-sm mb-3"
                     placeholder="example@example.com"
                     id="emailID"
                   />
@@ -98,7 +97,7 @@ const Login = () => {
                   <div className="relative lg:w-[350px] w-full flex justify-center items-center">
                     <input
                       type={`${showPassword ? "text" : "password"}`}
-                      className="lg:w-[350px] w-full font-normal border border-faintBlack px-2 py-2.5 focus:outline-none rounded-sm"
+                      className="lg:w-[350px] w-full font-normal text-tertiary placeholder:text-gray-500 border border-faintBlack px-2 py-2.5 focus:outline-none rounded-sm"
                       placeholder=""
                       id="passwordID"
                     />
@@ -126,16 +125,13 @@ const Login = () => {
                 Sign In
               </motion.button>
             </div>
-          }
+          )}
 
-          {
-            loading && <div className="h-44 w-full flex flex-col justify-center items-center ">
+          {loading && (
+            <div className="h-44 w-full flex flex-col justify-center items-center ">
               <Loader color="brown.6" />
             </div>
-          }
-
-
-
+          )}
         </div>
       </div>
     </>

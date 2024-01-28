@@ -32,7 +32,7 @@ const BooksPage = () => {
           setLoading(false);
         })
         .catch((err) => {
-          console.err(err);
+          console.error(err);
           setLoading(false);
         });
     }
@@ -66,7 +66,7 @@ const BooksPage = () => {
             onChange={(e) => {
               setSearchText(e.target.value);
             }}
-            className="focus:outline-none mt-5 py-2 px-3 border border-tertiary1 rounded-lg lg:w-[400px] w-[70%] text-tertiary bg-offWhite"
+            className="focus:outline-none mt-5 py-2 px-3 border border-tertiary1 rounded-lg lg:w-[400px] w-[70%] text-tertiary placeholder:text-gray-500 bg-offWhite"
           />
           <p className="mt-5 text-white lg:text-2xl text-lg">
             Or browse through our{" "}
