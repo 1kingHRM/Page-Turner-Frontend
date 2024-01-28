@@ -2,14 +2,11 @@ import React, { useState, useEffect } from "react";
 import { MdAir, MdEdit, MdDelete } from "react-icons/md";
 import { motion } from "framer-motion";
 import { Loader, Modal, TextInput, Select, Textarea } from "@mantine/core";
-import Image from "next/image";
-import Arts from "@/public/Arts.png";
 
 import axios from "axios";
 import baseUrl from "@/src/constants/api";
 
 import { toast, ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
 
 const Genres = () => {

@@ -1,55 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
+import { MdAutoStories, MdAir, MdDownload } from "react-icons/md";
 
 import Chart from "chart.js/auto";
 
 import { motion } from "framer-motion";
 
+import axios from "axios";
+import baseUrl from "@/src/constants/api";
+
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Loader } from "@mantine/core";
+
 const Overview = () => {
-  const [overviews, setOverviews] = useState([]);
+  const [books, setBooks] = useState(0);
+  const [genres, setGenres] = useState(0);
+  const [downloads, setDownloads] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  function getOverview() {
+    let userData = window.localStorage.getItem("page-turner");
+    userData = JSON.parse(userData);
+
+    axios({
+      method: "GET",
+      url: `${baseUrl}/overview`,
+      headers: { Authorization: `Bearer ${userData.token}` },
+    })
+      .then((res) => {
+        let payload = res.data.payload;
+
+        setDownloads(payload.downloads);
+        setBooks(payload.books);
+        setGenres(payload.genres);
+
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Unable to get the overview data from the server");
+        setLoading(false);
+      });
+  }
 
   useEffect(() => {
-    setOverviews([
-      {
-        name: "Total Books",
-        value: 34,
-        previous: 15,
-        total: 65,
-      },
-      {
-        name: "New Books",
-        value: 56,
-        previous: 72,
-        total: 150,
-      },
-      {
-        name: "New Members",
-        value: 34,
-        previous: 15,
-        total: 65,
-      },
-      {
-        name: "Total Members",
-        value: 56,
-        previous: 72,
-        total: 150,
-      },
-    ]);
-  }, []);
-
-  function isGreater(overview) {
-    return overview.value > overview.previous;
-  }
-
-  function difference(overview) {
-    return Math.abs(overview.value - overview.previous);
-  }
-
-  function isEqual(overview) {
-    return overview.value === overview.previous;
-  }
-
-  React.useEffect(() => {
+    getOverview();
     var config = {
       type: "line",
       data: {
@@ -61,29 +55,19 @@ const Overview = () => {
           "May",
           "June",
           "July",
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
         ],
         datasets: [
           {
-            label: "Emails Sent",
-            backgroundColor: "#3182ce",
-            borderColor: "#3182ce",
-            data: [65, 78, 66, 44, 56, 67, 75, 65, 78, 66, 44, 56, 67, 75],
+            label: "Total Downloads",
             fill: false,
-            lineTension: 0.5,
-          },
-          {
-            label: "Emails Received",
-            fill: false,
-            backgroundColor: "#edf2f7",
-            borderColor: "#edf2f7",
-            data: [40, 68, 86, 74, 56, 60, 87, 40, 68, 86, 74, 56, 60, 87],
+            backgroundColor: "#D4894A",
+            borderColor: "#341008",
+            data: [40, 68, 86, 74, 56, 60, 87, 40, 68, 86, 74, 56],
             lineTension: 0.5,
           },
         ],
@@ -92,7 +76,7 @@ const Overview = () => {
         responsive: true,
         title: {
           display: false,
-          text: "Sales Charts",
+          text: "Downloads Per Month",
           fontColor: "white",
         },
         legend: {
@@ -168,52 +152,81 @@ const Overview = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col h-auto px-10 bg-secondary">
-      <p className="text-2xl text-slate-950 mt-5 font-medium">Overview</p>
-      <p className="text-sm text-tertiary2">Admin Dashboard</p>
-      <div className="flex flex-row gap-5 mt-20">
-        {overviews.map((overview, i) => {
-          return (
+    <>
+      <ToastContainer
+        position="top-center"
+        autoClose={1500}
+        hideProgressBar={true}
+        newestOnTop={true}
+        rtl={false}
+        theme="colored"
+      />
+      <div className="w-full flex flex-col h-auto px-10 bg-secondary">
+        <p className="text-2xl text-slate-950 mt-5 font-medium">Overview</p>
+        <p className="text-sm text-tertiary2">Admin Dashboard</p>
+
+        {!loading && (
+          <div className="flex flex-row gap-20 mt-10 justify-center items-center">
             <motion.div
-              key={i}
               whileHover={{
                 scale: 1.05,
               }}
-              className="bg-white shadow-lg cursor-default rounded-md h-[100px] w-[25%] justify-between items-start flex flex-row px-5 py-4"
+              className="bg-white shadow-lg cursor-default rounded-md h-[100px] gap-10 justify-between items-start flex flex-row px-5 py-4"
             >
-              <div className="h-[70px] w-[70px] bg-slate-600 shadow-lg"></div>
-              <p className="mt-2 text-6xl text-tertiary font-bold">
-                {overview.value}
-              </p>
-              <div className="flex flex-col justify-start items-end">
-                <p className="text-md text-tertiary font-medium">
-                  {overview.name}
-                </p>
-                <div
-                  className={`px-2 py-1 rounded-2xl font-medium text-md cursor-default flex gap-2 items-center ${
-                    isGreater(overview)
-                      ? "bg-green1 text-green2"
-                      : isEqual(overview)
-                      ? "bg-offWhite text-white"
-                      : "bg-red1 text-red2"
-                  }`}
-                >
-                  {difference(overview)}%
-                  {isGreater(overview) && <IoMdArrowDropup size={20} />}
-                  {!isGreater(overview) && !isEqual(overview) && (
-                    <IoMdArrowDropdown size={20} />
-                  )}
-                </div>
+              <div className="h-[70px] w-[70px] bg-slate-600 shadow-lg flex items-center justify-center">
+                <MdAutoStories fill="#FFFFFF" size={"36px"} />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-md text-tertiary font-medium">Books</p>
+                <p className="text-5xl text-tertiary font-bold">{books}</p>
               </div>
             </motion.div>
-          );
-        })}
-      </div>
+            <motion.div
+              whileHover={{
+                scale: 1.05,
+              }}
+              className="bg-white shadow-lg cursor-default rounded-md h-[100px] gap-10 justify-between items-start flex flex-row px-5 py-4"
+            >
+              <div className="h-[70px] w-[70px] bg-slate-600 shadow-lg flex items-center justify-center">
+                <MdAir fill="#FFFFFF" size={"36px"} />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-md text-tertiary font-medium">Genres</p>
+                <p className="text-5xl text-tertiary font-bold">{genres}</p>
+              </div>
+            </motion.div>
+            <motion.div
+              whileHover={{
+                scale: 1.05,
+              }}
+              className="bg-white shadow-lg cursor-default rounded-md h-[100px] gap-10 justify-between items-start flex flex-row px-5 py-4"
+            >
+              <div className="h-[70px] w-[70px] bg-slate-600 shadow-lg flex items-center justify-center">
+                <MdDownload fill="#FFFFFF" size={"36px"} />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-md text-tertiary font-medium">Downloads</p>
+                <p className="text-5xl text-tertiary font-bold">
+                  {downloads.length}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        )}
 
-      <div className="w-full rounded-lg h-[400px] bg-white shadow-lg my-20 px-10 py-5">
-        <canvas id="line-chart"></canvas>
+        {loading && (
+          <div className="w-full h-40 items-center justify-center flex">
+            <Loader color="brown.6" />
+          </div>
+        )}
+
+        <div className="flex justify-center items-center">
+          <div className="w-[60%] rounded-lg h-[400px] bg-pale shadow-lg my-10 px-10 py-5">
+            <canvas id="line-chart"></canvas>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

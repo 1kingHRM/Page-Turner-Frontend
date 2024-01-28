@@ -15,6 +15,7 @@ const Settings = () => {
 
   const close = () => {
     setOpen(false);
+    setProcessing(false);
     setFlag(-1);
   };
 
@@ -25,13 +26,18 @@ const Settings = () => {
     axios({
       method: "DELETE",
       url: `${baseUrl}/${
-        flag === 0 ? "books" : flag === 1 ? "genres" : ""
+        flag === 0
+          ? "books"
+          : flag === 1
+          ? "genres"
+          : flag === 2
+          ? "downloads"
+          : ""
       }/delete`,
       headers: { Authorization: `Bearer ${userData.token}` },
     })
       .then((res) => {
         toast.success(`Cleared the database successfully`);
-        setProcessing(false);
         close();
       })
       .catch((err) => {
@@ -94,6 +100,28 @@ const Settings = () => {
             Clear
           </button>
         </div>
+
+        <h2 className="text-3xl text-tertiary font-[600] mt-20">Downloads</h2>
+        <div className="mt-2 flex justify-between items-center">
+          <div className="flex flex-col">
+            <p className="text-2xl text-tertiary font-medium">
+              Clear the database
+            </p>
+            <p className="text-lg text-tertiary">
+              You are about to remove all the downloads from the database. This
+              process is not reversible
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setFlag(2);
+              setOpen(true);
+            }}
+            className="bg-red-700 px-3 py-2 text-white rounded-lg font-medium text-xl"
+          >
+            Clear
+          </button>
+        </div>
       </div>
 
       <Modal opened={opened} onClose={close} color="brown.6">
@@ -101,7 +129,7 @@ const Settings = () => {
           <div className="flex flex-col">
             <p className="text-2xl text-tertiary text-center mt-5">
               Are you sure you want to remove all
-              {flag === 0 ? " books" : " genres"}?
+              {flag === 0 ? " books" : flag === 1 ? " genres" : " downloads"}?
             </p>
             <div className="flex justify-around pb-5 pt-10">
               <button
