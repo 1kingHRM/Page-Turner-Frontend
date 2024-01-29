@@ -12,14 +12,12 @@ import NavBar from "../reusable/NavBar";
 const Banner = () => {
   const [hide, setHide] = useState(false);
 
-
   useEffect(() => {
     let userData = window.localStorage.getItem("page-turner");
     if (userData !== undefined && userData !== null && userData.length > 0) {
       setHide(true);
     }
-  }, [])
-
+  }, []);
 
   return (
     <div className="bg-pale lg:h-[90vh] h-auto flex flex-col lg:px-[10%] px-[5%] pt-5 pb-10 justify-between">

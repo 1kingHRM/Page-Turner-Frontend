@@ -474,6 +474,7 @@ const AddModal = ({
             setSelectedGenre(e);
           }
         }}
+        className="text-tertiary placeholder:text-tertiary"
       />
       <div className="h-5" />
       <TextInput

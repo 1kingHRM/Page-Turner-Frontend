@@ -116,6 +116,8 @@ const Genres = () => {
       return;
     }
 
+    // if not exist, display empy and searvh Google
+
     const lowerText = text.toLowerCase();
     const result = genres.filter((genre) =>
       genre.name.toLowerCase().startsWith(lowerText)
@@ -175,7 +177,7 @@ const Genres = () => {
           <div className="flex flex-row justify-between items-center">
             <div>
               <p className="text-2xl text-slate-950 mt-5 font-medium">Genres</p>
-              <p className="text-sm text-tertiary2">
+              <p className="text-sm text-tertiary">
                 Add new genres, edit existing ones or remove genres
               </p>
             </div>
